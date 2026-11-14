@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-lightbg text-text-primary antialiased;
+    @apply bg-bg text-text-primary antialiased;
     font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
@@ -15,14 +15,14 @@
   }
 }
 
-/* Primary Malayalam Font - Anek Malayalam (Clean, Modern, Highly Legible) */
+/* Primary Malayalam Font - Anek Malayalam (Clean, Modern, Highly Legible - Strictly Preserved) */
 .font-malayalam {
   font-family: 'Anek Malayalam', 'Noto Sans Malayalam', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   letter-spacing: -0.005em;
 }
 
-/* Primary English Font - Montserrat */
+/* Primary English Font - Montserrat (Strictly Preserved) */
 .font-montserrat {
   font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -34,31 +34,25 @@
 }
 
 .islamic-pattern-bg {
-  background-color: #164B3C;
-  background-image: radial-gradient(rgba(46, 125, 91, 0.35) 1.2px, transparent 1.2px);
+  background-color: #952F2F;
+  background-image: radial-gradient(rgba(217, 136, 63, 0.35) 1.2px, transparent 1.2px);
   background-size: 24px 24px;
 }
 
 .islamic-pattern-light {
-  background-color: #F7FAF8;
-  background-image: radial-gradient(rgba(22, 75, 60, 0.08) 1px, transparent 1px);
+  background-color: #FFFBF7;
+  background-image: radial-gradient(rgba(149, 47, 47, 0.08) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
-.forest-gradient-text {
-  background: linear-gradient(135deg, #164B3C 0%, #2E7D5B 100%);
+.burgundy-gradient-text {
+  background: linear-gradient(135deg, #952F2F 0%, #D9883F 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.emerald-gradient-text {
-  background: linear-gradient(135deg, #2E7D5B 0%, #3C9B72 50%, #164B3C 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gold-gradient-text {
-  background: linear-gradient(135deg, #FFFFFF 0%, #EAF3EE 50%, #3C9B72 100%);
+.orange-gradient-text {
+  background: linear-gradient(135deg, #D9883F 0%, #E6A05E 50%, #952F2F 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -70,16 +64,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #F7FAF8;
+  background: #FFFBF7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2E7D5B;
+  background: #D9883F;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #164B3C;
+  background: #952F2F;
 }
 
 /* Print Styles */
@@ -90,7 +84,7 @@
   
   body, .print-container {
     background: white !important;
-    color: #1F2933 !important;
+    color: #292323 !important;
     padding: 0 !important;
     margin: 0 !important;
   }
@@ -98,6 +92,5 @@
   .print-card {
     border: 1px solid #ddd !important;
     box-shadow: none !important;
-    page-break-inside: avoid;
   }
 }

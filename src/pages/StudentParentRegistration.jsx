@@ -23,8 +23,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
     mobileNumber: '',
     whatsappNumber: '',
     studentName: '',
-    studentDepartment: 'Dars', // Strictly Dars or Hifz
-    relationship: 'Father', // Father, Mother, Guardian
+    studentDepartment: 'Dars', // STRICT DEFAULT: ONLY Dars or Hifz
+    relationship: 'Father',
     parentsAttending: 1,
     addressPlace: '',
     sameAsMobile: true
@@ -58,9 +58,9 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
       errs.studentName = 'വിദ്യാർത്ഥിയുടെ പേര് നൽകുക';
     }
 
-    // Strict validation: Only Dars or Hifz
+    // STRICT DEPARTMENT RESTRICTION: ONLY Dars or Hifz
     if (formData.studentDepartment !== 'Dars' && formData.studentDepartment !== 'Hifz') {
-      errs.studentDepartment = 'വിഭാഗം Dars അല്ലെങ്കിൽ Hifz ആയിരിക്കണം';
+      errs.studentDepartment = 'ദർസ് (Dars) അല്ലെങ്കിൽ ഹിഫ്സ് (Hifz) മാത്രം തിരഞ്ഞെടുക്കുക';
     }
 
     if (!formData.relationship) {
@@ -68,7 +68,7 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
     }
 
     if (formData.parentsAttending < 1) {
-      errs.parentsAttending = 'കുറഞ്ഞത് ഒരാളെങ്കിലും പങ്കെടുക്കണം';
+      errs.parentsAttending = 'കുറഞ്ഞത് ഒരു രക്ഷിതാവെങ്കിലും പങ്കെടുക്കണം';
     }
 
     if (!formData.addressPlace.trim()) {
@@ -143,32 +143,32 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
       {/* Back Navigation */}
       <button
         onClick={() => { setActivePage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-        className="inline-flex items-center space-x-2 text-xs font-malayalam font-semibold text-text-secondary hover:text-forest mb-6 transition-colors"
+        className="inline-flex items-center space-x-2 text-xs font-malayalam font-semibold text-text-secondary hover:text-burgundy mb-6 transition-colors"
       >
-        <ArrowLeft className="w-4 h-4 text-emerald" />
+        <ArrowLeft className="w-4 h-4 text-orange" />
         <span>ഹോമിലേക്ക് മടങ്ങുക</span>
       </button>
 
       {/* Main Card */}
-      <div className="bg-white rounded-3xl border-2 border-forest/20 shadow-card overflow-hidden">
+      <div className="bg-white rounded-3xl border-2 border-orange/30 shadow-card overflow-hidden">
         
-        {/* Header Banner - Deep Forest Green with Emerald Accents */}
-        <div className="bg-forest text-white p-6 sm:p-8 text-center relative border-b-2 border-emerald">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-forest-dark border border-emerald/40 text-xs text-emerald-light mb-3">
-            <Users className="w-4 h-4 text-emerald" />
+        {/* Header Banner - Primary Burgundy with Golden Orange Accents */}
+        <div className="bg-burgundy text-white p-6 sm:p-8 text-center relative border-b-2 border-orange">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-burgundy-dark border border-orange/40 text-xs text-orange-light mb-3">
+            <Users className="w-4 h-4 text-orange" />
             <span className="font-malayalam">താസ്കിയ അക്കാദമി ഔദ്യോഗിക പോർട്ടൽ</span>
           </div>
 
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-white tracking-wide uppercase">
             STUDENT PARENT REGISTRATION
           </h1>
-          <p className="font-malayalam text-base sm:text-lg text-white/95 font-medium mt-1">
+          <p className="font-malayalam text-base sm:text-lg text-white font-medium mt-1">
             വിദ്യാർത്ഥികളുടെ രക്ഷിതാക്കൾക്കുള്ള രജിസ്ട്രേഷൻ
           </p>
 
           <OrnamentalDivider light className="my-3 opacity-60" />
 
-          <p className="font-malayalam text-xs text-white/80 max-w-lg mx-auto">
+          <p className="font-malayalam text-xs text-cream/90 max-w-lg mx-auto">
             ഹാപ്പി പാരന്റിംഗ് സംഗമത്തിൽ പങ്കെടുക്കുന്നതിനായി വിദ്യാർത്ഥിയുടെയും രക്ഷിതാവിന്റെയും കൃത്യമായ വിവരങ്ങൾ രേഖപ്പെടുത്തുക.
           </p>
         </div>
@@ -184,14 +184,14 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
           </div>
         )}
 
-        {/* Form Body: White & Soft Sage with Forest focus borders */}
+        {/* Form Body: White & Soft Cream with Burgundy focus borders */}
         <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-6">
           
           {/* SECTION 1: PARENT DETAILS */}
           <div className="space-y-4">
-            <div className="border-b border-forest/15 pb-2">
-              <h3 className="font-heading font-bold text-base text-forest flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-emerald" />
+            <div className="border-b border-orange/20 pb-2">
+              <h3 className="font-heading font-bold text-base text-burgundy flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-orange" />
                 <span>Parent Information</span>
                 <span className="font-malayalam text-xs font-normal text-text-secondary">(രക്ഷിതാവിന്റെ വിവരങ്ങൾ)</span>
               </h3>
@@ -200,10 +200,10 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
             {/* Parent Name */}
             <div>
               <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                രക്ഷിതാവിന്റെ പേര് (Parent Name) <span className="text-forest">*</span>
+                രക്ഷിതാവിന്റെ പേര് (Parent Name) <span className="text-burgundy">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
                   <User className="w-4 h-4" />
                 </div>
                 <input
@@ -211,8 +211,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   placeholder="രക്ഷിതാവിന്റെ പൂർണ്ണ പേര് നൽകുക"
                   value={formData.parentName}
                   onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-sage/30 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-forest focus:border-forest focus:bg-white transition-all ${
-                    errors.parentName ? 'border-red-500' : 'border-forest/20'
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-cream/40 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white transition-all ${
+                    errors.parentName ? 'border-red-500' : 'border-orange/20'
                   }`}
                 />
               </div>
@@ -226,10 +226,10 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
               {/* Mobile */}
               <div>
                 <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                  മൊബൈൽ നമ്പർ (Mobile Number) <span className="text-forest">*</span>
+                  മൊബൈൽ നമ്പർ (Mobile Number) <span className="text-burgundy">*</span>
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
                     <Phone className="w-4 h-4" />
                   </div>
                   <input
@@ -238,8 +238,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                     maxLength={10}
                     value={formData.mobileNumber}
                     onChange={handleMobileChange}
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-sage/30 text-text-primary placeholder:text-text-muted text-sm font-mono focus:outline-none focus:ring-2 focus:ring-forest focus:border-forest focus:bg-white transition-all ${
-                      errors.mobileNumber ? 'border-red-500' : 'border-forest/20'
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-cream/40 text-text-primary placeholder:text-text-muted text-sm font-mono focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white transition-all ${
+                      errors.mobileNumber ? 'border-red-500' : 'border-orange/20'
                     }`}
                   />
                 </div>
@@ -251,10 +251,10 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
               {/* WhatsApp */}
               <div>
                 <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                  വാട്സ്ആപ്പ് നമ്പർ (WhatsApp Number) <span className="text-forest">*</span>
+                  വാട്സ്ആപ്പ് നമ്പർ (WhatsApp Number) <span className="text-burgundy">*</span>
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
                     <MessageSquare className="w-4 h-4" />
                   </div>
                   <input
@@ -265,8 +265,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                     value={formData.sameAsMobile ? formData.mobileNumber : formData.whatsappNumber}
                     onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                     className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-mono transition-all ${
-                      formData.sameAsMobile ? 'bg-gray-100 text-text-muted cursor-not-allowed' : 'bg-sage/30 text-text-primary focus:outline-none focus:ring-2 focus:ring-forest focus:border-forest focus:bg-white'
-                    } ${errors.whatsappNumber ? 'border-red-500' : 'border-forest/20'}`}
+                      formData.sameAsMobile ? 'bg-gray-100 text-text-muted cursor-not-allowed' : 'bg-cream/40 text-text-primary focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white'
+                    } ${errors.whatsappNumber ? 'border-red-500' : 'border-orange/20'}`}
                   />
                 </div>
                 <div className="mt-1.5 flex items-center space-x-2">
@@ -275,7 +275,7 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                     id="sameAsMobile"
                     checked={formData.sameAsMobile}
                     onChange={handleCheckboxChange}
-                    className="w-4 h-4 text-forest rounded border-forest/30 focus:ring-forest"
+                    className="w-4 h-4 text-burgundy rounded border-orange/40 focus:ring-burgundy accent-burgundy"
                   />
                   <label htmlFor="sameAsMobile" className="text-xs font-malayalam text-text-secondary cursor-pointer select-none">
                     മൊബൈൽ നമ്പർ തന്നെ (Same as Mobile)
@@ -293,16 +293,16 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
               {/* Relationship */}
               <div>
                 <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                  വിദ്യാർത്ഥിയുമായുള്ള ബന്ധം (Relationship) <span className="text-forest">*</span>
+                  വിദ്യാർത്ഥിയുമായുള്ള ബന്ധം (Relationship) <span className="text-burgundy">*</span>
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
                     <HeartHandshake className="w-4 h-4" />
                   </div>
                   <select
                     value={formData.relationship}
                     onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-forest/20 bg-sage/30 text-text-primary text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-forest focus:border-forest focus:bg-white"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-orange/20 bg-cream/40 text-text-primary text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white"
                   >
                     <option value="Father">പിതാവ് (Father)</option>
                     <option value="Mother">മാതാവ് (Mother)</option>
@@ -314,23 +314,23 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
               {/* Number of Parents Attending */}
               <div>
                 <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                  പങ്കെടുക്കുന്ന രക്ഷിതാക്കളുടെ എണ്ണം <span className="text-forest">*</span>
+                  പങ്കെടുക്കുന്ന രക്ഷിതാക്കളുടെ എണ്ണം <span className="text-burgundy">*</span>
                 </label>
-                <div className="flex items-center space-x-3 bg-sage/40 border border-forest/20 rounded-xl p-1.5">
+                <div className="flex items-center space-x-3 bg-cream/50 border border-orange/20 rounded-xl p-1.5">
                   <button
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, parentsAttending: Math.max(1, prev.parentsAttending - 1) }))}
-                    className="w-10 h-10 rounded-lg bg-white border border-forest/20 flex items-center justify-center text-text-primary hover:bg-emerald hover:text-white transition-colors"
+                    className="w-10 h-10 rounded-lg bg-white border border-orange/20 flex items-center justify-center text-text-primary hover:bg-orange hover:text-white transition-colors"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="flex-1 text-center font-heading font-bold text-lg text-forest font-mono">
+                  <span className="flex-1 text-center font-heading font-bold text-lg text-burgundy font-mono">
                     {formData.parentsAttending}
                   </span>
                   <button
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, parentsAttending: prev.parentsAttending + 1 }))}
-                    className="w-10 h-10 rounded-lg bg-white border border-forest/20 flex items-center justify-center text-text-primary hover:bg-emerald hover:text-white transition-colors"
+                    className="w-10 h-10 rounded-lg bg-white border border-orange/20 flex items-center justify-center text-text-primary hover:bg-orange hover:text-white transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -342,9 +342,9 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
 
           {/* SECTION 2: STUDENT DETAILS */}
           <div className="space-y-4 pt-4">
-            <div className="border-b border-forest/15 pb-2">
-              <h3 className="font-heading font-bold text-base text-forest flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-emerald" />
+            <div className="border-b border-orange/20 pb-2">
+              <h3 className="font-heading font-bold text-base text-burgundy flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-orange" />
                 <span>Student Information</span>
                 <span className="font-malayalam text-xs font-normal text-text-secondary">(വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ)</span>
               </h3>
@@ -353,10 +353,10 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
             {/* Student Name */}
             <div>
               <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                വിദ്യാർത്ഥിയുടെ പേര് (Student Name) <span className="text-forest">*</span>
+                വിദ്യാർത്ഥിയുടെ പേര് (Student Name) <span className="text-burgundy">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
                   <GraduationCap className="w-4 h-4" />
                 </div>
                 <input
@@ -364,8 +364,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   placeholder="വിദ്യാർത്ഥിയുടെ പൂർണ്ണ പേര് നൽകുക"
                   value={formData.studentName}
                   onChange={(e) => setFormData({ ...formData, studentName: e.target.value })}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-sage/30 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-forest focus:border-forest focus:bg-white transition-all ${
-                    errors.studentName ? 'border-red-500' : 'border-forest/20'
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-cream/40 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white transition-all ${
+                    errors.studentName ? 'border-red-500' : 'border-orange/20'
                   }`}
                 />
               </div>
@@ -377,7 +377,7 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
             {/* Student Department (STRICTLY ONLY TWO OPTIONS: Dars or Hifz) */}
             <div>
               <label className="block text-xs font-malayalam font-bold text-text-primary mb-2">
-                വിദ്യാർത്ഥിയുടെ വിഭാഗം (Student Department - Dars / Hifz മാത്രം) <span className="text-forest">*</span>
+                വിദ്യാർത്ഥിയുടെ വിഭാഗം (Student Department - Dars / Hifz മാത്രം) <span className="text-burgundy">*</span>
               </label>
 
               <div className="grid grid-cols-2 gap-4">
@@ -386,8 +386,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   onClick={() => setFormData({ ...formData, studentDepartment: 'Dars' })}
                   className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${
                     formData.studentDepartment === 'Dars'
-                      ? 'border-forest bg-forest text-white shadow-md'
-                      : 'border-forest/20 bg-sage/30 hover:border-forest text-text-primary'
+                      ? 'border-burgundy bg-burgundy text-white shadow-md'
+                      : 'border-orange/20 bg-cream/40 hover:border-burgundy text-text-primary'
                   }`}
                 >
                   <div>
@@ -397,7 +397,7 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                     formData.studentDepartment === 'Dars' ? 'border-white bg-white' : 'border-gray-400'
                   }`}>
-                    {formData.studentDepartment === 'Dars' && <span className="w-2 h-2 rounded-full bg-forest" />}
+                    {formData.studentDepartment === 'Dars' && <span className="w-2 h-2 rounded-full bg-burgundy" />}
                   </div>
                 </div>
 
@@ -406,8 +406,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   onClick={() => setFormData({ ...formData, studentDepartment: 'Hifz' })}
                   className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${
                     formData.studentDepartment === 'Hifz'
-                      ? 'border-forest bg-forest text-white shadow-md'
-                      : 'border-forest/20 bg-sage/30 hover:border-forest text-text-primary'
+                      ? 'border-burgundy bg-burgundy text-white shadow-md'
+                      : 'border-orange/20 bg-cream/40 hover:border-burgundy text-text-primary'
                   }`}
                 >
                   <div>
@@ -417,7 +417,7 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                     formData.studentDepartment === 'Hifz' ? 'border-white bg-white' : 'border-gray-400'
                   }`}>
-                    {formData.studentDepartment === 'Hifz' && <span className="w-2 h-2 rounded-full bg-forest" />}
+                    {formData.studentDepartment === 'Hifz' && <span className="w-2 h-2 rounded-full bg-burgundy" />}
                   </div>
                 </div>
               </div>
@@ -430,10 +430,10 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
             {/* Address / Place */}
             <div>
               <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                സ്ഥലം / മേൽവിലാസം (Place / Address) <span className="text-forest">*</span>
+                സ്ഥലം / മേൽവിലാസം (Place / Address) <span className="text-burgundy">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <input
@@ -441,8 +441,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   placeholder="ഉദാ: കരിങ്കല്ലത്താണി, പെരിന്തൽമണ്ണ"
                   value={formData.addressPlace}
                   onChange={(e) => setFormData({ ...formData, addressPlace: e.target.value })}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-sage/30 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-forest focus:border-forest focus:bg-white transition-all ${
-                    errors.addressPlace ? 'border-red-500' : 'border-forest/20'
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-cream/40 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white transition-all ${
+                    errors.addressPlace ? 'border-red-500' : 'border-orange/20'
                   }`}
                 />
               </div>
@@ -453,28 +453,25 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
 
           </div>
 
-          {/* Primary Submit Button: Deep Forest Green background with white text */}
+          {/* Primary Submit Button: Burgundy background with white text */}
           <div className="pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 px-6 rounded-2xl bg-forest hover:bg-forest-dark text-white font-malayalam font-bold text-base shadow-forest hover:shadow-lg active:scale-95 transition-all duration-300 border border-forest flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full py-4 px-6 rounded-2xl bg-burgundy hover:bg-burgundy-dark text-white font-malayalam font-bold text-base shadow-burgundy hover:shadow-lg active:scale-95 transition-all duration-300 border border-burgundy flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin text-emerald-light" />
-                  <span>ഗൂഗിൾ ഷീറ്റ്സിലേക്ക് സേവ് ചെയ്യുന്നു...</span>
+                  <Loader2 className="w-5 h-5 animate-spin text-orange-light" />
+                  <span>രജിസ്ട്രേഷൻ സമർപ്പിക്കുന്നു...</span>
                 </>
               ) : (
                 <>
-                  <CheckCircle2 className="w-5 h-5 text-emerald-light" />
+                  <CheckCircle2 className="w-5 h-5 text-orange-light" />
                   <span>രജിസ്ട്രേഷൻ സമർപ്പിക്കുക</span>
                 </>
               )}
             </button>
-            <p className="text-center text-xs font-malayalam text-text-secondary mt-2">
-              വിവരങ്ങൾ നേരിട്ട് താസ്കിയ അക്കാദമി ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസിൽ രേഖപ്പെടുത്തുന്നതാണ്.
-            </p>
           </div>
 
         </form>

@@ -110,8 +110,8 @@ export default function ReportsExport() {
       format: 'a4'
     });
 
-    // Header styling - Deep Forest Green with Soft Sage & Emerald Green
-    doc.setFillColor(22, 75, 60); // Deep Forest Green (#164B3C)
+    // Header styling - Primary Burgundy (#952F2F) with Golden Orange (#D9883F) & Soft Cream
+    doc.setFillColor(149, 47, 47); // Primary Burgundy (#952F2F)
     doc.rect(0, 0, 842, 75, 'F');
 
     doc.setTextColor(255, 255, 255); // White
@@ -119,12 +119,12 @@ export default function ReportsExport() {
     doc.setFont('helvetica', 'bold');
     doc.text('HAPPY PARENTING — OFFICIAL REGISTRATION REPORT', 421, 28, { align: 'center' });
 
-    doc.setTextColor(234, 243, 238); // Soft Sage (#EAF3EE)
+    doc.setTextColor(248, 239, 231); // Soft Cream (#F8EFE7)
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     doc.text('THAZKIYA ACADEMY, KARINKALLATHANI', 421, 46, { align: 'center' });
     doc.setFontSize(9);
-    doc.setTextColor(46, 125, 91); // Emerald Green (#2E7D5B)
+    doc.setTextColor(217, 136, 63); // Golden Orange (#D9883F)
     doc.text('22 NOVEMBER • SUNDAY | 10:00 AM – 2:00 PM', 421, 62, { align: 'center' });
 
     // Table Columns & Rows
@@ -160,7 +160,7 @@ export default function ReportsExport() {
       startY: 85,
       theme: 'grid',
       headStyles: {
-        fillColor: [22, 75, 60], // Deep Forest Green (#164B3C)
+        fillColor: [149, 47, 47], // Primary Burgundy (#952F2F)
         textColor: [255, 255, 255], // White
         fontStyle: 'bold',
         fontSize: 9
@@ -171,7 +171,7 @@ export default function ReportsExport() {
         overflow: 'linebreak'
       },
       alternateRowStyles: {
-        fillColor: [247, 250, 248] // Light Background (#F7FAF8)
+        fillColor: [248, 239, 231] // Soft Cream (#F8EFE7)
       },
       margin: { top: 85, left: 20, right: 20, bottom: 20 }
     });
