@@ -4,26 +4,24 @@ import {
   UserCheck, 
   GraduationCap, 
   CheckCircle2, 
-  XCircle, 
-  Clock, 
-  ArrowUpRight, 
   Calendar, 
   Sparkles,
-  FileText,
   UserPlus,
   RefreshCw,
-  Search,
   ChevronRight,
   TrendingUp,
-  Percent
+  Percent,
+  Trash2,
+  Loader2
 } from 'lucide-react';
 import { apiService } from '../services/api';
-import OrnamentalDivider from '../components/OrnamentalDivider';
 
-export default function AdminDashboard({ setActivePage, onSelectRegistration }) {
+export default function AdminDashboard({ setActivePage, onSelectRegistration, adminUser }) {
   const [stats, setStats] = useState(null);
   const [recentRegistrations, setRecentRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteItem, setDeleteItem] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -46,7 +44,6 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
   useEffect(() => {
     loadData();
 
-    // Listen for cross-tab or remote updates
     const channel = typeof window !== 'undefined' && window.BroadcastChannel ? new BroadcastChannel('hp_data_sync') : null;
     if (channel) {
       channel.onmessage = () => {
@@ -58,46 +55,66 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
     };
   }, []);
 
+  // Requirement 3: Delete registration from dashboard
+  const handleDeleteConfirm = async () => {
+    if (!deleteItem) return;
+    setIsDeleting(true);
+    try {
+      const res = await apiService.deleteRegistration(deleteItem.registrationId, adminUser?.adminId);
+      if (res.success) {
+        setDeleteItem(null);
+        await loadData();
+      } else {
+        alert(res.message || 'നീക്കം ചെയ്യൽ പരാജയപ്പെട്ടു');
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       
       {/* Top Welcome & Actions Bar */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/40 shadow-card flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/40 shadow-card flex flex-col md:flex-row items-start md:items-center justify-between gap-4 font-malayalam">
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
-            <span className="px-3 py-0.5 rounded-full bg-emerald-forest/10 text-emerald-deep font-bold text-xs uppercase tracking-wider border border-emerald-deep/20">
-              Executive Admin Portal
+            <span className="px-3 py-0.5 rounded-full bg-emerald-forest/10 text-emerald-deep font-bold text-xs uppercase tracking-wider border border-emerald-deep/20 font-sans">
+              Admin Portal
             </span>
-            <span className="text-xs text-text-muted">Live Database Monitoring</span>
+            <span className="text-xs text-text-muted">തത്സമയ ഡാറ്റാബേസ് വിവരങ്ങൾ</span>
           </div>
+          {/* Main Heading in English */}
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-emerald-deep">
             HAPPY PARENTING DASHBOARD
           </h1>
           <p className="text-xs sm:text-sm text-text-secondary">
-            Thazkiya Academy, Karinkallathani • 22 November, Sunday (10:00 AM – 2:00 PM)
+            താസ്കിയ അക്കാദമി, കരിങ്കല്ലത്താണി • 22 നവംബർ, ഞായർ (രാവിലെ 10:00 – ഉച്ചക്ക് 2:00)
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={() => setActivePage('admin-registrations')}
-            className="px-4 py-2.5 rounded-xl bg-emerald-deep text-gold-champagne font-bold text-xs uppercase tracking-wider flex items-center space-x-2 hover:bg-emerald-forest transition-colors shadow-md border border-gold-antique/40"
+            className="px-4 py-2.5 rounded-xl bg-emerald-deep text-gold-champagne font-bold text-xs flex items-center space-x-2 hover:bg-emerald-forest transition-colors shadow-md border border-gold-antique/40"
           >
             <UserPlus className="w-4 h-4 text-gold-antique" />
-            <span>Manage Registrations</span>
+            <span>രജിസ്ട്രേഷനുകൾ നിയന്ത്രിക്കുക</span>
           </button>
 
           <button
             onClick={() => setActivePage('admin-attendance')}
-            className="px-4 py-2.5 rounded-xl bg-gold-antique text-emerald-deep font-bold text-xs uppercase tracking-wider flex items-center space-x-2 hover:brightness-105 transition-colors shadow-xs"
+            className="px-4 py-2.5 rounded-xl bg-gold-antique text-emerald-deep font-bold text-xs flex items-center space-x-2 hover:brightness-105 transition-colors shadow-xs"
           >
             <CheckCircle2 className="w-4 h-4 text-emerald-deep" />
-            <span>Attendance Portal</span>
+            <span>ഹാജർ പോർട്ടൽ</span>
           </button>
 
           <button
             onClick={loadData}
-            title="Refresh Database Stats"
+            title="വിവരങ്ങൾ പുതുക്കുക"
             className="p-2.5 rounded-xl border border-gold-antique/40 bg-ivory/50 text-emerald-deep hover:bg-ivory transition-colors"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -108,101 +125,101 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
       {/* ========================================================
           4 PRIMARY STATISTIC CARDS (Exact Required Metrics)
           ======================================================== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 font-malayalam">
         
         {/* STAT 1: Total Student Parent Registrations */}
         <div className="bg-white rounded-2xl p-6 border-2 border-emerald-deep/30 shadow-card hover:border-emerald-deep transition-all relative overflow-hidden group">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-              Parent Registrations
+            <span className="text-xs font-bold text-text-secondary">
+              രക്ഷിതാക്കളുടെ രജിസ്ട്രേഷൻ
             </span>
             <div className="w-10 h-10 rounded-xl bg-emerald-deep/10 text-emerald-deep flex items-center justify-center group-hover:scale-110 transition-transform">
               <Users className="w-5 h-5" />
             </div>
           </div>
           <div className="space-y-1">
-            <span className="font-heading font-black text-3xl sm:text-4xl text-emerald-deep block">
+            <span className="font-heading font-black text-3xl sm:text-4xl text-emerald-deep block font-mono">
               {stats?.totalStudentParentRegs ?? 0}
             </span>
             <p className="text-[11px] text-text-muted">
-              Total Student Parent forms submitted
+              ആകെ വിദ്യാർത്ഥി രക്ഷിതാക്കളുടെ ഫോമുകൾ
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-emerald-deep/10 flex items-center justify-between text-[11px]">
-            <span className="text-emerald-forest font-semibold">Thazkiya Parents</span>
-            <span className="text-text-muted">Dars & Hifz</span>
+            <span className="text-emerald-forest font-semibold">താസ്കിയ രക്ഷിതാക്കൾ</span>
+            <span className="text-text-muted font-mono">Dars & Hifz</span>
           </div>
         </div>
 
         {/* STAT 2: Total Guest Registrations */}
         <div className="bg-white rounded-2xl p-6 border-2 border-amber-warm/30 shadow-card hover:border-amber-warm transition-all relative overflow-hidden group">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-              Guest Registrations
+            <span className="text-xs font-bold text-text-secondary">
+              അതിഥികളുടെ രജിസ്ട്രേഷൻ
             </span>
             <div className="w-10 h-10 rounded-xl bg-amber-warm/15 text-amber-dark flex items-center justify-center group-hover:scale-110 transition-transform">
               <UserCheck className="w-5 h-5" />
             </div>
           </div>
           <div className="space-y-1">
-            <span className="font-heading font-black text-3xl sm:text-4xl text-amber-dark block">
+            <span className="font-heading font-black text-3xl sm:text-4xl text-amber-dark block font-mono">
               {stats?.totalGuestRegs ?? 0}
             </span>
             <p className="text-[11px] text-text-muted">
-              Total Normal Guest forms submitted
+              ആകെ പൊതു അതിഥികളുടെ ഫോമുകൾ
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-amber-warm/10 flex items-center justify-between text-[11px]">
-            <span className="text-amber-dark font-semibold">Community Attendees</span>
-            <span className="text-text-muted">Invited Guests</span>
+            <span className="text-amber-dark font-semibold">ക്ഷണിക്കപ്പെട്ട അതിഥികൾ</span>
+            <span className="text-text-muted">General Guests</span>
           </div>
         </div>
 
         {/* STAT 3: Total Parents */}
         <div className="bg-white rounded-2xl p-6 border-2 border-gold-antique/40 shadow-card hover:border-gold-antique transition-all relative overflow-hidden group">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-              Total Parents Headcount
+            <span className="text-xs font-bold text-text-secondary">
+              ആകെ രക്ഷിതാക്കളുടെ എണ്ണം
             </span>
             <div className="w-10 h-10 rounded-xl bg-gold-antique/20 text-gold-dark flex items-center justify-center group-hover:scale-110 transition-transform">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
           <div className="space-y-1">
-            <span className="font-heading font-black text-3xl sm:text-4xl text-gold-dark block">
+            <span className="font-heading font-black text-3xl sm:text-4xl text-gold-dark block font-mono">
               {stats?.totalParents ?? 0}
             </span>
             <p className="text-[11px] text-text-muted">
-              Cumulative parents attending summit
+              സംഗമത്തിൽ പങ്കെടുക്കുന്ന ആകെ രക്ഷിതാക്കൾ
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-gold-antique/10 flex items-center justify-between text-[11px]">
-            <span className="text-gold-dark font-semibold">Fathers & Mothers</span>
-            <span className="text-text-muted">Seating required</span>
+            <span className="text-gold-dark font-semibold">പിതാക്കന്മാരും മാതാക്കളും</span>
+            <span className="text-text-muted">സീറ്റിംഗ് കണക്ക്</span>
           </div>
         </div>
 
         {/* STAT 4: Total Guests */}
         <div className="bg-white rounded-2xl p-6 border-2 border-burgundy-deep/30 shadow-card hover:border-burgundy-deep transition-all relative overflow-hidden group">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-              Total Guests Headcount
+            <span className="text-xs font-bold text-text-secondary">
+              ആകെ അതിഥികളുടെ എണ്ണം
             </span>
             <div className="w-10 h-10 rounded-xl bg-burgundy-deep/10 text-burgundy-deep flex items-center justify-center group-hover:scale-110 transition-transform">
               <Sparkles className="w-5 h-5" />
             </div>
           </div>
           <div className="space-y-1">
-            <span className="font-heading font-black text-3xl sm:text-4xl text-burgundy-deep block">
+            <span className="font-heading font-black text-3xl sm:text-4xl text-burgundy-deep block font-mono">
               {stats?.totalGuests ?? 0}
             </span>
             <p className="text-[11px] text-text-muted">
-              Cumulative guest attendees accompanying
+              കൂടെ പങ്കെടുക്കുന്ന ആകെ അതിഥികൾ
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-burgundy-deep/10 flex items-center justify-between text-[11px]">
-            <span className="text-burgundy-deep font-semibold">General Audience</span>
-            <span className="text-text-muted">Delegates</span>
+            <span className="text-burgundy-deep font-semibold">പൊതു സദസ്യർ</span>
+            <span className="text-text-muted">Total Guests</span>
           </div>
         </div>
 
@@ -211,7 +228,7 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
       {/* ========================================================
           DEPARTMENT-WISE & ATTENDANCE SUMMARY BREAKDOWN
           ======================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 font-malayalam">
         
         {/* Department Breakdown: Dars vs Hifz */}
         <div className="bg-white rounded-3xl p-6 border-2 border-gold-antique/30 shadow-card space-y-4">
@@ -221,7 +238,7 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
                 Department Summary
               </h3>
               <p className="text-xs text-text-secondary">
-                Dars & Hifz Student Distribution
+                ദർസ്, ഹിഫ്സ് വിദ്യാർത്ഥികളുടെ അനുപാതം
               </p>
             </div>
             <GraduationCap className="w-5 h-5 text-gold-dark" />
@@ -232,8 +249,8 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
             {/* Dars Bar */}
             <div className="p-4 rounded-2xl bg-ivory/60 border border-gold-antique/20 space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-emerald-deep">
-                <span>Dars Department (ദർസ്)</span>
-                <span className="font-heading text-base">{stats?.darsCount ?? 0}</span>
+                <span>ദർസ് വിഭാഗം (Dars Department)</span>
+                <span className="font-mono font-bold text-base">{stats?.darsCount ?? 0}</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                 <div 
@@ -246,8 +263,8 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
             {/* Hifz Bar */}
             <div className="p-4 rounded-2xl bg-ivory/60 border border-gold-antique/20 space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-emerald-deep">
-                <span>Hifz Department (ഹിഫ്സ്)</span>
-                <span className="font-heading text-base">{stats?.hifzCount ?? 0}</span>
+                <span>ഹിഫ്സ് വിഭാഗം (Hifz Department)</span>
+                <span className="font-mono font-bold text-base">{stats?.hifzCount ?? 0}</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                 <div 
@@ -260,7 +277,7 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
           </div>
 
           <p className="text-[11px] text-text-muted italic pt-2">
-            * Strictly restricted to Dars and Hifz streams only.
+            * ദർസ്, ഹിഫ്സ് വിഭാഗങ്ങൾക്ക് മാത്രമായി പരിമിതപ്പെടുത്തിയിരിക്കുന്നു.
           </p>
         </div>
 
@@ -272,7 +289,7 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
                 Attendance Status
               </h3>
               <p className="text-xs text-text-secondary">
-                Turnout & Ground Verification
+                തത്സമയ ഹാജർ പരിശോധന
               </p>
             </div>
             <Percent className="w-5 h-5 text-emerald-forest" />
@@ -280,62 +297,58 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
 
           <div className="grid grid-cols-2 gap-3 pt-2">
             <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-1">
-              <span className="text-[11px] uppercase font-bold text-emerald-800">Present</span>
-              <span className="font-heading font-black text-3xl text-emerald-800 block">
+              <span className="text-[11px] font-bold text-emerald-800">ഹാജരുള്ളവർ (Present)</span>
+              <span className="font-heading font-black text-3xl text-emerald-800 block font-mono">
                 {stats?.presentCount ?? 0}
               </span>
-              <span className="text-[10px] text-emerald-700">Checked In</span>
+              <span className="text-[10px] text-emerald-700">ചെക്ക് ഇൻ ചെയ്തു</span>
             </div>
 
             <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-center space-y-1">
-              <span className="text-[11px] uppercase font-bold text-rose-800">Absent</span>
-              <span className="font-heading font-black text-3xl text-rose-800 block">
+              <span className="text-[11px] font-bold text-rose-800">ഹാജരില്ലാത്തവർ (Absent)</span>
+              <span className="font-heading font-black text-3xl text-rose-800 block font-mono">
                 {stats?.absentCount ?? 0}
               </span>
-              <span className="text-[10px] text-rose-700">Pending Arrival</span>
+              <span className="text-[10px] text-rose-700">എത്താനുള്ളവർ</span>
             </div>
           </div>
 
           <div className="p-3.5 rounded-xl bg-ivory/80 border border-gold-antique/30 flex items-center justify-between text-xs">
-            <span className="font-semibold text-text-primary">Attendance Turnout Rate:</span>
-            <span className="font-heading font-bold text-base text-emerald-deep">
+            <span className="font-semibold text-text-primary">ഹാജർ ശതമാനം:</span>
+            <span className="font-mono font-bold text-base text-emerald-deep">
               {stats?.attendanceRate ?? 0}%
             </span>
           </div>
         </div>
 
         {/* Programme Configuration Card */}
-        <div className="bg-emerald-deep text-ivory rounded-3xl p-6 border-2 border-gold-antique shadow-emerald flex flex-col justify-between space-y-4">
+        <div className="bg-emerald-deep text-ivory rounded-3xl p-6 border-2 border-gold-antique shadow-emerald flex flex-col justify-between space-y-4 font-malayalam">
           <div className="space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gold-champagne">
-              OFFICIAL SUMMIT DETAILS
+            <span className="text-[10px] font-bold text-gold-champagne uppercase font-sans">
+              OFFICIAL SUMMIT
             </span>
             <h3 className="font-heading font-bold text-xl text-gold-champagne leading-tight">
               HAPPY PARENTING
             </h3>
             <p className="text-xs text-ivory/80 leading-relaxed">
-              Abdul Hakeem Saqafi Al Arshadi Ayancheri
+              നേതൃത്വം: അബ്ദുൽ ഹക്കീം സഖാഫി അൽ അർശദി അയഞ്ചേരി
             </p>
             <div className="pt-2 text-xs space-y-1.5 text-ivory/90">
               <p className="flex items-center space-x-2">
-                <Calendar className="w-3.5 h-3.5 text-amber-warm" />
-                <span>22 November, Sunday</span>
-              </p>
-              <p className="flex items-center space-x-2">
-                <Clock className="w-3.5 h-3.5 text-gold-champagne" />
-                <span>10:00 AM – 2:00 PM</span>
+                <Calendar className="w-3.5 h-3.5 text-amber-warm shrink-0" />
+                <span>22 നവംബർ, ഞായർ (10:00 AM – 2:00 PM)</span>
               </p>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-gold-antique/20 flex items-center justify-between">
-            <span className="text-xs text-ivory/70">Group Parents Meeting Only</span>
+          <div className="pt-4 border-t border-gold-antique/20 flex items-center justify-between text-xs">
+            <span className="text-ivory/70">ഗ്രൂപ്പ് മീറ്റിംഗ് മാത്രം</span>
             <button
               onClick={() => setActivePage('admin-reports')}
-              className="text-xs text-gold-champagne hover:underline flex items-center space-x-1 font-semibold"
+              className="text-gold-champagne hover:underline flex items-center space-x-1 font-semibold"
             >
-              <span>Export Reports</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <span>റിപ്പോർട്ടുകൾ</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
@@ -345,43 +358,43 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
       {/* ========================================================
           RECENT REGISTRATIONS TABLE
           ======================================================== */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/40 shadow-card space-y-4">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/40 shadow-card space-y-4 font-malayalam">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gold-antique/20 pb-4">
           <div>
             <h3 className="font-heading font-bold text-xl text-emerald-deep">
               Recent Registrations
             </h3>
             <p className="text-xs text-text-secondary">
-              Latest submissions received in the official database
+              ഡാറ്റാബേസിൽ ലഭിച്ച ഏറ്റവും പുതിയ രജിസ്ട്രേഷനുകൾ
             </p>
           </div>
 
           <button
             onClick={() => setActivePage('admin-registrations')}
-            className="text-xs font-bold uppercase tracking-wider text-emerald-forest hover:text-emerald-deep flex items-center space-x-1"
+            className="text-xs font-bold text-emerald-forest hover:text-emerald-deep flex items-center space-x-1"
           >
-            <span>View All Registrations ({stats?.totalRegistrations ?? 0})</span>
+            <span>എല്ലാ രജിസ്ട്രേഷനുകളും കാണുക ({stats?.totalRegistrations ?? 0})</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Table / Cards */}
+        {/* Table */}
         {recentRegistrations.length === 0 ? (
           <div className="py-8 text-center text-xs text-text-muted">
-            No registrations found yet.
+            രജിസ്ട്രേഷനുകൾ ഒന്നും ലഭിച്ചിട്ടില്ല.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-gold-antique/20 text-text-secondary uppercase tracking-wider">
-                  <th className="py-3 px-4 font-bold">Registration ID</th>
-                  <th className="py-3 px-4 font-bold">Name</th>
-                  <th className="py-3 px-4 font-bold">Category</th>
-                  <th className="py-3 px-4 font-bold">Mobile</th>
-                  <th className="py-3 px-4 font-bold">Headcount</th>
-                  <th className="py-3 px-4 font-bold">Attendance</th>
-                  <th className="py-3 px-4 font-bold text-right">Action</th>
+                <tr className="border-b border-gold-antique/20 text-text-secondary uppercase text-[11px]">
+                  <th className="py-3 px-4 font-bold">Reg ID</th>
+                  <th className="py-3 px-4 font-bold">പേര്</th>
+                  <th className="py-3 px-4 font-bold">വിഭാഗം</th>
+                  <th className="py-3 px-4 font-bold">മൊബൈൽ</th>
+                  <th className="py-3 px-4 font-bold">ആളുകൾ</th>
+                  <th className="py-3 px-4 font-bold">ഹാജർ</th>
+                  <th className="py-3 px-4 font-bold text-right">നടപടി</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gold-antique/10">
@@ -394,7 +407,7 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
                       {item.name}
                       {item.studentName && (
                         <span className="block text-[11px] text-text-secondary">
-                          Student: {item.studentName} ({item.studentDepartment})
+                          വിദ്യാർത്ഥി: {item.studentName} ({item.studentDepartment})
                         </span>
                       )}
                     </td>
@@ -404,7 +417,7 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
                           ? 'bg-emerald-100 text-emerald-800'
                           : 'bg-amber-100 text-amber-800'
                       }`}>
-                        {item.registrationType}
+                        {item.registrationType === 'Student Parent' ? 'രക്ഷിതാവ്' : 'അതിഥി'}
                       </span>
                     </td>
                     <td className="py-3.5 px-4 font-mono text-text-secondary">
@@ -419,19 +432,29 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
                           ? 'bg-emerald-100 text-emerald-800'
                           : 'bg-gray-100 text-gray-700'
                       }`}>
-                        <span>{item.attendanceStatus || 'Absent'}</span>
+                        <span>{item.attendanceStatus === 'Present' ? 'ഹാജർ' : 'ഹാജരില്ല'}</span>
                       </span>
                     </td>
                     <td className="py-3.5 px-4 text-right">
-                      <button
-                        onClick={() => {
-                          if (onSelectRegistration) onSelectRegistration(item);
-                          setActivePage('admin-registrations');
-                        }}
-                        className="text-xs text-gold-dark hover:underline font-semibold"
-                      >
-                        Details
-                      </button>
+                      <div className="flex items-center justify-end space-x-2">
+                        <button
+                          onClick={() => {
+                            if (onSelectRegistration) onSelectRegistration(item);
+                            setActivePage('admin-registrations');
+                          }}
+                          className="text-xs text-gold-dark hover:underline font-semibold"
+                        >
+                          വിശദാംശങ്ങൾ
+                        </button>
+                        {/* Requirement 3: Delete Button */}
+                        <button
+                          onClick={() => setDeleteItem(item)}
+                          className="p-1 rounded text-burgundy-deep hover:bg-burgundy-surface"
+                          title="നീക്കം ചെയ്യുക"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -440,6 +463,61 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration }) 
           </div>
         )}
       </div>
+
+      {/* Requirement 3: Malayalam Confirmation Dialog for Delete */}
+      {deleteItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-malayalam">
+          <div className="bg-white rounded-3xl border-2 border-burgundy-deep/40 shadow-2xl max-w-sm w-full p-6 text-center space-y-4 animate-fadeIn">
+            <div className="w-14 h-14 rounded-full bg-burgundy-surface border-2 border-burgundy-deep text-burgundy-deep flex items-center justify-center mx-auto shadow-md">
+              <Trash2 className="w-7 h-7" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-heading font-bold text-lg text-emerald-deep">
+                Delete Registration
+              </h3>
+              
+              {/* Exact Requirement 3 Confirmation Text: "ഈ രജിസ്ട്രേഷൻ സ്ഥിരമായി നീക്കം ചെയ്യണോ?" */}
+              <p className="font-malayalam font-bold text-base text-burgundy-deep">
+                ഈ രജിസ്ട്രേഷൻ സ്ഥിരമായി നീക്കം ചെയ്യണോ?
+              </p>
+
+              <div className="p-3 bg-ivory/80 rounded-xl border border-gold-antique/30 text-xs text-text-primary text-left font-mono">
+                <p><strong>ID:</strong> {deleteItem.registrationId}</p>
+                <p className="font-sans font-semibold"><strong>പേര്:</strong> {deleteItem.name}</p>
+              </div>
+            </div>
+
+            {/* Exact Requirement 3 Buttons: "റദ്ദാക്കുക" and "നീക്കം ചെയ്യുക" */}
+            <div className="flex items-center justify-center space-x-3 pt-3 border-t border-gold-antique/20">
+              <button
+                type="button"
+                onClick={() => setDeleteItem(null)}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-malayalam font-semibold text-text-secondary hover:bg-gray-100 transition-colors"
+              >
+                റദ്ദാക്കുക
+              </button>
+              
+              <button
+                type="button"
+                onClick={handleDeleteConfirm}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-burgundy-deep hover:bg-burgundy-dark text-white text-xs font-malayalam font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-1.5"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>നീക്കം ചെയ്യുന്നു...</span>
+                  </>
+                ) : (
+                  <span>നീക്കം ചെയ്യുക</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -10,7 +10,6 @@ import {
   Menu, 
   X, 
   RefreshCw, 
-  Database, 
   ShieldCheck,
   ChevronRight
 } from 'lucide-react';
@@ -32,11 +31,11 @@ export default function AdminLayout({
   }, [activePage]);
 
   const navItems = [
-    { id: 'admin-dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
-    { id: 'admin-registrations', label: 'Registrations', icon: Users },
-    { id: 'admin-attendance', label: 'Attendance Management', icon: CheckSquare },
-    { id: 'admin-reports', label: 'Reports & Export', icon: FileText },
-    { id: 'admin-settings', label: 'Settings & Cloud DB', icon: Settings },
+    { id: 'admin-dashboard', label: 'ഡാഷ്‌ബോർഡ് അവലോകനം', en: 'Dashboard', icon: LayoutDashboard },
+    { id: 'admin-registrations', label: 'രജിസ്ട്രേഷനുകൾ', en: 'Registrations', icon: Users },
+    { id: 'admin-attendance', label: 'ഹാജർ നിയന്ത്രണം', en: 'Attendance', icon: CheckSquare },
+    { id: 'admin-reports', label: 'റിപ്പോർട്ടുകൾ & എക്സ്പോർട്ട്', en: 'Reports', icon: FileText },
+    { id: 'admin-settings', label: 'സെറ്റിംഗ്സ് & ക്ലൗഡ്', en: 'Settings', icon: Settings },
   ];
 
   const handleSyncRefresh = async () => {
@@ -52,7 +51,7 @@ export default function AdminLayout({
   };
 
   return (
-    <div className="min-h-screen bg-ivory flex flex-col md:flex-row">
+    <div className="min-h-screen bg-ivory flex flex-col md:flex-row font-malayalam">
       
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-emerald-deep text-ivory border-r border-gold-antique/30 shrink-0">
@@ -66,7 +65,7 @@ export default function AdminLayout({
             <h2 className="font-heading font-bold text-sm tracking-wide text-gold-champagne leading-tight">
               THAZKIYA ADMIN
             </h2>
-            <p className="text-[10px] text-ivory/60 tracking-wider uppercase">
+            <p className="text-[10px] text-ivory/60 tracking-wider uppercase font-sans">
               HAPPY PARENTING PORTAL
             </p>
           </div>
@@ -77,12 +76,12 @@ export default function AdminLayout({
           <div className="flex items-center space-x-2">
             <span className={`w-2.5 h-2.5 rounded-full animate-pulse ${gasUrl ? 'bg-emerald-400' : 'bg-amber-warm'}`} />
             <span className="text-ivory/90 font-medium">
-              {gasUrl ? 'Google Sheets Live' : 'Active Local DB'}
+              {gasUrl ? 'ഗൂഗിൾ ഷീറ്റ്സ് ലൈവ്' : 'ലോക്കൽ ഡാറ്റാബേസ്'}
             </span>
           </div>
           <button 
             onClick={handleSyncRefresh}
-            title="Sync latest data"
+            title="വിവരങ്ങൾ പുതുക്കുക"
             className={`p-1 text-gold-champagne hover:text-white transition-transform ${isSyncing ? 'animate-spin' : ''}`}
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -98,7 +97,7 @@ export default function AdminLayout({
               <button
                 key={item.id}
                 onClick={() => setActivePage(item.id)}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-medium transition-all ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all ${
                   isActive
                     ? 'bg-gradient-to-r from-gold-antique to-amber-warm text-emerald-deep font-bold shadow-gold'
                     : 'text-ivory/80 hover:bg-emerald-forest hover:text-gold-champagne'
@@ -121,8 +120,8 @@ export default function AdminLayout({
               <ShieldCheck className="w-4 h-4 text-gold-champagne" />
             </div>
             <div className="overflow-hidden">
-              <p className="text-xs font-semibold text-ivory truncate">{adminUser?.username || 'Admin'}</p>
-              <p className="text-[10px] text-gold-champagne/80 truncate">{adminUser?.role || 'Super Admin'}</p>
+              <p className="text-xs font-semibold text-ivory truncate font-sans">{adminUser?.username || 'Admin'}</p>
+              <p className="text-[10px] text-gold-champagne/80 truncate font-sans">{adminUser?.role || 'Super Admin'}</p>
             </div>
           </div>
 
@@ -132,12 +131,12 @@ export default function AdminLayout({
               className="flex-1 py-1.5 px-2 rounded bg-emerald-forest/80 text-[11px] text-ivory/90 hover:text-white flex items-center justify-center space-x-1 border border-gold-antique/20"
             >
               <Globe className="w-3 h-3" />
-              <span>Website</span>
+              <span>വെബ്സൈറ്റ്</span>
             </button>
             <button
               onClick={onLogout}
               className="py-1.5 px-2.5 rounded bg-burgundy-deep text-[11px] text-white hover:bg-burgundy-dark flex items-center justify-center space-x-1"
-              title="Logout"
+              title="ലോഗൗട്ട്"
             >
               <LogOut className="w-3 h-3" />
             </button>
@@ -157,7 +156,7 @@ export default function AdminLayout({
             >
               <Menu className="w-6 h-6" />
             </button>
-            <span className="font-heading font-bold text-sm text-gold-champagne">
+            <span className="font-heading font-bold text-sm text-gold-champagne font-sans">
               ADMIN DASHBOARD
             </span>
           </div>
@@ -173,7 +172,7 @@ export default function AdminLayout({
               onClick={() => setActivePage('home')}
               className="px-2.5 py-1 rounded bg-emerald-forest text-gold-champagne text-xs border border-gold-antique/30"
             >
-              Website
+              വെബ്സൈറ്റ്
             </button>
             <button
               onClick={onLogout}
@@ -241,14 +240,14 @@ export default function AdminLayout({
                   className="w-full py-2 px-3 rounded bg-emerald-forest text-xs text-gold-champagne border border-gold-antique/20 flex items-center justify-center space-x-2"
                 >
                   <Globe className="w-4 h-4" />
-                  <span>View Public Website</span>
+                  <span>വെബ്സൈറ്റ് കാണുക</span>
                 </button>
                 <button
                   onClick={onLogout}
                   className="w-full py-2 px-3 rounded bg-burgundy-deep text-xs text-white font-semibold flex items-center justify-center space-x-2"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
+                  <span>ലോഗൗട്ട്</span>
                 </button>
               </div>
             </div>

@@ -44,7 +44,7 @@ export default function App() {
   // Guard protected admin routes
   if (isAdminPage && !adminUser) {
     return (
-      <div className="min-h-screen bg-ivory flex flex-col justify-between">
+      <div className="min-h-screen bg-ivory flex flex-col justify-between font-malayalam">
         <Navbar 
           activePage={activePage} 
           setActivePage={setActivePage} 
@@ -74,7 +74,8 @@ export default function App() {
           {activePage === 'admin-dashboard' && (
             <AdminDashboard 
               setActivePage={setActivePage} 
-              onSelectRegistration={setSelectedRegForAdmin} 
+              onSelectRegistration={setSelectedRegForAdmin}
+              adminUser={adminUser}
             />
           )}
           {activePage === 'admin-registrations' && (

@@ -1,28 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Settings, 
   Database, 
   CheckCircle2, 
   XCircle, 
-  Copy, 
-  ExternalLink, 
-  Shield, 
-  RotateCcw, 
-  FileCode, 
-  Check, 
-  Activity, 
-  Save,
-  Info,
-  Server
+  Server,
+  Activity,
+  Info
 } from 'lucide-react';
 import { apiService } from '../services/api';
-import OrnamentalDivider from '../components/OrnamentalDivider';
 
 export default function AdminSettings() {
   const [gasUrl, setGasUrl] = useState('');
   const [testResult, setTestResult] = useState(null);
   const [testing, setTesting] = useState(false);
-  const [copiedCode, setCopiedCode] = useState(false);
   const [activityLogs, setActivityLogs] = useState([]);
   const [saveMessage, setSaveMessage] = useState('');
 
@@ -41,7 +31,7 @@ export default function AdminSettings() {
   const handleSaveUrl = (e) => {
     e.preventDefault();
     apiService.setGasUrl(gasUrl);
-    setSaveMessage('Google Apps Script URL saved successfully.');
+    setSaveMessage('ഗൂഗിൾ ആപ്സ് സ്ക്രിപ്റ്റ് URL വിജയകരമായി സേവ് ചെയ്തു.');
     setTimeout(() => setSaveMessage(''), 3000);
   };
 
@@ -58,48 +48,26 @@ export default function AdminSettings() {
     }
   };
 
-  const handleCopyScriptCode = () => {
-    const codeSnippet = `/**
- * HAPPY PARENTING - GOOGLE APPS SCRIPT BACKEND
- * Deploy as Web App with 'Anyone' access.
- * See google-apps-script/Code.gs for the full code.
- */`;
-    navigator.clipboard.writeText(codeSnippet);
-    setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2500);
-  };
-
-  const handleResetSeed = () => {
-    if (window.confirm('Reset database to clean initial demonstration state?')) {
-      apiService.resetToSeed();
-      loadLogs();
-      alert('Database reset to initial demo state.');
-      window.location.reload();
-    }
-  };
-
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-malayalam">
       
-      {/* Settings Header */}
+      {/* Settings Header - Main Heading in English */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/30 shadow-card">
         <div className="flex items-center space-x-2">
-          <span className="px-3 py-0.5 rounded-full bg-emerald-forest/10 text-emerald-deep font-bold text-xs uppercase tracking-wider border border-emerald-deep/20">
-            System Infrastructure
+          <span className="px-3 py-0.5 rounded-full bg-emerald-forest/10 text-emerald-deep font-bold text-xs uppercase tracking-wider border border-emerald-deep/20 font-sans">
+            System Config
           </span>
-          <span className="text-xs text-text-muted">Cloud Database & Security</span>
+          <span className="text-xs text-text-muted">ക്ലൗഡ് ഡാറ്റാബേസും സുരക്ഷയും</span>
         </div>
         <h1 className="font-heading font-black text-2xl sm:text-3xl text-emerald-deep mt-1">
           Settings & Cloud Synchronization
         </h1>
         <p className="text-xs text-text-secondary">
-          Configure real-time Google Sheets backend connection and review administrator audit trails.
+          ഗൂഗിൾ ഷീറ്റ്സ് ബാക്കെൻഡ് കണക്ഷൻ സജ്ജീകരിക്കുകയും അഡ്മിൻ ആക്ടിവിറ്റി ലോഗുകൾ പരിശോധിക്കുകയും ചെയ്യുക.
         </p>
       </div>
 
-      {/* ========================================================
-          GOOGLE SHEETS CONNECTION CONFIGURATION
-          ======================================================== */}
+      {/* Google Sheets Connection Configuration */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/30 shadow-card space-y-6">
         
         <div className="flex items-center justify-between border-b border-gold-antique/20 pb-4">
@@ -112,7 +80,7 @@ export default function AdminSettings() {
                 Google Sheets Database Connection
               </h2>
               <p className="text-xs text-text-secondary">
-                Google Apps Script Web App Deployment URL
+                ഗൂഗിൾ ആപ്സ് സ്ക്രിപ്റ്റ് വെബ് ആപ്പ് URL
               </p>
             </div>
           </div>
@@ -120,7 +88,7 @@ export default function AdminSettings() {
           <div className="flex items-center space-x-2">
             <span className={`w-3 h-3 rounded-full animate-pulse ${gasUrl ? 'bg-emerald-500' : 'bg-amber-500'}`} />
             <span className="text-xs font-semibold text-text-primary">
-              {gasUrl ? 'Cloud Connected' : 'Local Database Active'}
+              {gasUrl ? 'ക്ലൗഡ് കണക്റ്റഡ്' : 'ലോക്കൽ ഡാറ്റാബേസ്'}
             </span>
           </div>
         </div>
@@ -134,8 +102,8 @@ export default function AdminSettings() {
 
         <form onSubmit={handleSaveUrl} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-1.5">
-              Google Apps Script Web App URL
+            <label className="block text-xs font-bold text-text-primary mb-1.5">
+              ഗൂഗിൾ ആപ്സ് സ്ക്രിപ്റ്റ് വെബ് ആപ്പ് URL (Google Apps Script Web App URL)
             </label>
             <div className="relative">
               <input
@@ -143,17 +111,17 @@ export default function AdminSettings() {
                 placeholder="https://script.google.com/macros/s/.../exec"
                 value={gasUrl}
                 onChange={(e) => setGasUrl(e.target.value)}
-                className="w-full pl-4 pr-24 py-3 rounded-xl border border-gold-antique/40 bg-ivory/30 text-xs text-text-primary font-mono focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white"
+                className="w-full pl-4 pr-28 py-3 rounded-xl border border-gold-antique/40 bg-ivory/30 text-xs text-text-primary font-mono focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white"
               />
               <button
                 type="submit"
                 className="absolute right-2 top-2 px-4 py-1.5 rounded-lg bg-emerald-deep text-gold-champagne font-bold text-xs hover:bg-emerald-forest transition-colors shadow-xs"
               >
-                Save URL
+                സേവ് ചെയ്യുക
               </button>
             </div>
             <p className="text-[11px] text-text-muted mt-1.5">
-              The public web app and admin portal communicate securely with this Google Sheets backend endpoint.
+              പബ്ലിക് വെബ്‌സൈറ്റും അഡ്മിൻ പാനലും ഈ ഗൂഗിൾ ഷീറ്റ്സ് എൻഡ്പോയിന്റ് വഴിയാണ് പ്രവർത്തിക്കുന്നത്.
             </p>
           </div>
 
@@ -162,10 +130,10 @@ export default function AdminSettings() {
               type="button"
               onClick={handleTestConnection}
               disabled={testing || !gasUrl}
-              className="px-4 py-2 rounded-xl bg-gold-antique text-emerald-deep font-bold text-xs uppercase tracking-wider hover:brightness-105 disabled:opacity-50 transition-all flex items-center space-x-2"
+              className="px-4 py-2 rounded-xl bg-gold-antique text-emerald-deep font-bold text-xs hover:brightness-105 disabled:opacity-50 transition-all flex items-center space-x-2"
             >
               <Server className="w-4 h-4" />
-              <span>{testing ? 'Testing Endpoint...' : 'Test Connection'}</span>
+              <span>{testing ? 'പരിശോധിക്കുന്നു...' : 'കണക്ഷൻ പരിശോധിക്കുക (Test Connection)'}</span>
             </button>
 
             {testResult && (
@@ -183,63 +151,31 @@ export default function AdminSettings() {
         <div className="bg-ivory/60 rounded-2xl p-5 border border-gold-antique/30 space-y-3 text-xs">
           <h4 className="font-heading font-bold text-sm text-emerald-deep flex items-center space-x-2">
             <Info className="w-4 h-4 text-gold-dark" />
-            <span>How to connect your official Google Sheet:</span>
+            <span>ഗൂഗിൾ ഷീറ്റിലേക്ക് കണക്റ്റ് ചെയ്യുന്ന വിധം:</span>
           </h4>
 
           <ol className="list-decimal list-inside space-y-1.5 text-text-secondary pl-1 leading-relaxed">
-            <li>Open <a href="https://sheets.new" target="_blank" rel="noreferrer" className="text-emerald-deep font-bold underline">Google Sheets</a> and create a new sheet named <strong>"Happy Parenting Database"</strong>.</li>
-            <li>In the top menu, click <strong>Extensions &gt; Apps Script</strong>.</li>
-            <li>Copy and paste the backend code from <code className="bg-white px-1.5 py-0.5 rounded border font-mono">google-apps-script/Code.gs</code>.</li>
-            <li>Run the <code className="bg-white px-1.5 py-0.5 rounded border font-mono font-bold">setupDatabase()</code> function once to automatically create the 4 sheets and headers.</li>
-            <li>Click <strong>Deploy &gt; New deployment</strong>, choose <strong>Web app</strong>, set <em>Execute as: Me</em> and <em>Who has access: Anyone</em>.</li>
-            <li>Paste your Web App URL into the input field above and click <strong>Save URL</strong>.</li>
+            <li><a href="https://sheets.new" target="_blank" rel="noreferrer" className="text-emerald-deep font-bold underline">Google Sheets</a> തുറന്ന് <strong>"Happy Parenting Database"</strong> എന്ന പേരിൽ പുതിയൊരു ഷീറ്റ് ഉണ്ടാക്കുക.</li>
+            <li>മുകളിലെ മെനുവിൽ നിന്നും <strong>Extensions &gt; Apps Script</strong> ക്ലിക്ക് ചെയ്യുക.</li>
+            <li><code className="bg-white px-1.5 py-0.5 rounded border font-mono">google-apps-script/Code.gs</code> ഫയലിലെ കോഡ് പൂർണ്ണമായും കോപ്പി ചെയ്ത് പേസ്റ്റ് ചെയ്യുക.</li>
+            <li>ടൂൾബാറിൽ നിന്നും <code className="bg-white px-1.5 py-0.5 rounded border font-mono font-bold">setupDatabase</code> തിരഞ്ഞെടുത്ത് <strong>Run</strong> ചെയ്യുക (ഇത് 4 ഷീറ്റുകളും ഹെഡറുകളും ഓട്ടോമാറ്റിക് ആയി ഉണ്ടാക്കും).</li>
+            <li><strong>Deploy &gt; New deployment</strong> ക്ലിക്ക് ചെയ്ത്, <em>Web app</em> തിരഞ്ഞെടുക്കുക. <em>Execute as: Me</em> എന്നും <em>Who has access: Anyone</em> എന്നും നൽകി ഡിപ്ലോയ് ചെയ്യുക.</li>
+            <li>ലഭിക്കുന്ന Web App URL മുകളിലെ ബോക്സിൽ പേസ്റ്റ് ചെയ്ത് <strong>സേവ് ചെയ്യുക</strong>.</li>
           </ol>
         </div>
 
       </div>
 
-      {/* ========================================================
-          DATA MANAGEMENT & SAFETY CONTROLS
-          ======================================================== */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/30 shadow-card space-y-4">
-        <div className="border-b border-gold-antique/20 pb-3">
-          <h2 className="font-heading font-bold text-lg text-emerald-deep">
-            Database Maintenance & Testing Tools
-          </h2>
-          <p className="text-xs text-text-secondary">
-            Reset demo data for dress rehearsals or test runs
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-amber-surface border border-amber-warm/40">
-          <div>
-            <h4 className="font-bold text-sm text-amber-dark">Reset to Clean Demo State</h4>
-            <p className="text-xs text-text-secondary max-w-md">
-              Restores initial demonstration records (3 Student Parents and 2 Normal Guests) for presentation and testing.
-            </p>
-          </div>
-          <button
-            onClick={handleResetSeed}
-            className="px-4 py-2 rounded-xl bg-amber-warm text-white font-bold text-xs uppercase tracking-wider hover:bg-amber-dark transition-colors flex items-center space-x-1.5"
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span>Reset Demo DB</span>
-          </button>
-        </div>
-      </div>
-
-      {/* ========================================================
-          ADMIN ACTIVITY AUDIT LOGS TABLE
-          ======================================================== */}
+      {/* Admin Activity Logs Table */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/30 shadow-card space-y-4">
         <div className="flex items-center justify-between border-b border-gold-antique/20 pb-3">
           <div className="flex items-center space-x-2">
             <Activity className="w-5 h-5 text-burgundy-deep" />
             <h2 className="font-heading font-bold text-lg text-emerald-deep">
-              Admin Activity Logs (Audit Trail)
+              Admin Activity Logs
             </h2>
           </div>
-          <span className="text-xs text-text-muted">Total Events: {activityLogs.length}</span>
+          <span className="text-xs text-text-muted">ആകെ രേഖകൾ: {activityLogs.length}</span>
         </div>
 
         <div className="overflow-x-auto">
@@ -247,11 +183,11 @@ export default function AdminSettings() {
             <thead>
               <tr className="bg-ivory/80 text-text-secondary uppercase text-[10px] font-bold border-b border-gold-antique/20">
                 <th className="py-2.5 px-3">Log ID</th>
-                <th className="py-2.5 px-3">Operator</th>
-                <th className="py-2.5 px-3">Action Description</th>
+                <th className="py-2.5 px-3">ഓപ്പറേറ്റർ</th>
+                <th className="py-2.5 px-3">നടപടി (Action)</th>
                 <th className="py-2.5 px-3">Target ID</th>
-                <th className="py-2.5 px-3">Date</th>
-                <th className="py-2.5 px-3">Time</th>
+                <th className="py-2.5 px-3">തീയതി</th>
+                <th className="py-2.5 px-3">സമയം</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gold-antique/10 font-mono text-[11px]">

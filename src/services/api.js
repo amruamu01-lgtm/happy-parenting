@@ -1,11 +1,10 @@
 /**
  * API Service for Happy Parenting Web Application
  * Handles communication with Google Apps Script Web App API
- * and provides seamless local fallback with full mock database & synchronization.
+ * and keeps temporary UI state in React memory (NO localStorage/sessionStorage for registration data).
  */
 
 const STORAGE_KEYS = {
-  REGISTRATIONS: 'hp_registrations_v1',
   ADMINS: 'hp_admins_v1',
   SETTINGS: 'hp_settings_v1',
   ACTIVITY_LOGS: 'hp_logs_v1',
@@ -13,20 +12,30 @@ const STORAGE_KEYS = {
   AUTH_SESSION: 'hp_auth_session'
 };
 
-// Initial Seed Data for immediate testing and fallback
-const INITIAL_REGISTRATIONS = [
+// Strict Requirement: Ensure NO registration data is stored in localStorage/sessionStorage
+if (typeof window !== 'undefined') {
+  try {
+    localStorage.removeItem('hp_registrations_v1');
+    sessionStorage.removeItem('hp_registrations_v1');
+  } catch (e) {
+    // Ignore storage clear errors
+  }
+}
+
+// In-Memory Registration Data (Temporary UI State only)
+let inMemoryRegistrations = [
   {
     registrationId: 'HP-SP-1001',
     registrationType: 'Student Parent',
-    name: 'Muhammed Basheer K.',
+    name: 'മുഹമ്മദ് ബഷീർ കെ.',
     mobileNumber: '9847123456',
     whatsappNumber: '9847123456',
-    studentName: 'Ahmad Faiz',
+    studentName: 'അഹമ്മദ് ഫായിസ്',
     studentDepartment: 'Dars',
-    relationship: 'Father',
+    relationship: 'പിതാവ്',
     parentsAttending: 2,
     guestsCount: 0,
-    addressPlace: 'Karinkallathani, Perinthalmanna',
+    addressPlace: 'കരിങ്കല്ലത്താണി, പെരിന്തൽമണ്ണ',
     attendanceStatus: 'Present',
     createdDate: '14/11/2026',
     createdTime: '10:15 AM',
@@ -35,15 +44,15 @@ const INITIAL_REGISTRATIONS = [
   {
     registrationId: 'HP-SP-1002',
     registrationType: 'Student Parent',
-    name: 'Fathima Suhara',
+    name: 'ഫാത്തിമ സുഹറ',
     mobileNumber: '9745987654',
     whatsappNumber: '9745987654',
-    studentName: 'Hafiz Bilal',
+    studentName: 'ഹാഫിള് ബിലാൽ',
     studentDepartment: 'Hifz',
-    relationship: 'Mother',
+    relationship: 'മാതാവ്',
     parentsAttending: 1,
     guestsCount: 0,
-    addressPlace: 'Thazhekode',
+    addressPlace: 'താഴെക്കോട്',
     attendanceStatus: 'Present',
     createdDate: '14/11/2026',
     createdTime: '11:30 AM',
@@ -52,15 +61,15 @@ const INITIAL_REGISTRATIONS = [
   {
     registrationId: 'HP-SP-1003',
     registrationType: 'Student Parent',
-    name: 'Abdul Rasheed E.',
+    name: 'അബ്ദുൽ റഷീദ് ഇ.',
     mobileNumber: '9447332211',
     whatsappNumber: '9447332211',
-    studentName: 'Umar Farooq',
+    studentName: 'ഉമർ ഫാറൂഖ്',
     studentDepartment: 'Dars',
-    relationship: 'Father',
+    relationship: 'പിതാവ്',
     parentsAttending: 2,
     guestsCount: 0,
-    addressPlace: 'Mannarkkad',
+    addressPlace: 'മണ്ണാർക്കാട്',
     attendanceStatus: 'Absent',
     createdDate: '14/11/2026',
     createdTime: '12:05 PM',
@@ -69,7 +78,7 @@ const INITIAL_REGISTRATIONS = [
   {
     registrationId: 'HP-NG-2001',
     registrationType: 'Normal Guest',
-    name: 'Dr. Usman Master',
+    name: 'ഡോ. ഉസ്മാൻ മാസ്റ്റർ',
     mobileNumber: '9895001122',
     whatsappNumber: '9895001122',
     studentName: '',
@@ -77,7 +86,7 @@ const INITIAL_REGISTRATIONS = [
     relationship: '',
     parentsAttending: 0,
     guestsCount: 2,
-    addressPlace: 'Melattur, Malappuram',
+    addressPlace: 'മേലാറ്റൂർ, മലപ്പുറം',
     attendanceStatus: 'Present',
     createdDate: '14/11/2026',
     createdTime: '01:20 PM',
@@ -86,7 +95,7 @@ const INITIAL_REGISTRATIONS = [
   {
     registrationId: 'HP-NG-2002',
     registrationType: 'Normal Guest',
-    name: 'Sayyid Munavvar Ali',
+    name: 'സയ്യിദ് മുനവ്വറലി',
     mobileNumber: '9633445566',
     whatsappNumber: '9633445566',
     studentName: '',
@@ -94,7 +103,7 @@ const INITIAL_REGISTRATIONS = [
     relationship: '',
     parentsAttending: 0,
     guestsCount: 1,
-    addressPlace: 'Alanallur',
+    addressPlace: 'അലനല്ലൂർ',
     attendanceStatus: 'Absent',
     createdDate: '14/11/2026',
     createdTime: '02:45 PM',
@@ -102,11 +111,11 @@ const INITIAL_REGISTRATIONS = [
   }
 ];
 
-const INITIAL_LOGS = [
+let inMemoryLogs = [
   {
     logId: 'LOG-1001',
     adminId: 'SYSTEM',
-    action: 'Database initialized with official seed records',
+    action: 'ഡാറ്റാബേസ് സജ്ജീകരിച്ചു',
     registrationId: 'ALL',
     date: '14/11/2026',
     time: '10:00 AM'
@@ -124,45 +133,30 @@ function notifyDataChanged() {
   }
 }
 
-// Local storage helpers
-function getLocalData(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) {
-      localStorage.setItem(key, JSON.stringify(fallback));
-      return fallback;
-    }
-    return JSON.parse(raw);
-  } catch (e) {
-    return fallback;
-  }
-}
-
-function setLocalData(key, data) {
-  try {
-    localStorage.setItem(key, JSON.stringify(data));
-    notifyDataChanged();
-  } catch (e) {
-    console.error('Failed to save to localStorage:', e);
-  }
-}
-
 export const apiService = {
   // Get active Google Apps Script Web App URL
   getGasUrl() {
-    return localStorage.getItem(STORAGE_KEYS.API_URL) || import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL || '';
+    try {
+      return localStorage.getItem(STORAGE_KEYS.API_URL) || import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL || '';
+    } catch (e) {
+      return '';
+    }
   },
 
   setGasUrl(url) {
-    localStorage.setItem(STORAGE_KEYS.API_URL, (url || '').trim());
-    notifyDataChanged();
+    try {
+      localStorage.setItem(STORAGE_KEYS.API_URL, (url || '').trim());
+      notifyDataChanged();
+    } catch (e) {
+      console.error(e);
+    }
   },
 
   // Test connection to Google Apps Script Web App
   async testConnection(url) {
     const targetUrl = (url || this.getGasUrl()).trim();
     if (!targetUrl) {
-      return { success: false, message: 'No Google Apps Script URL specified' };
+      return { success: false, message: 'ഗൂഗിൾ ആപ്സ് സ്ക്രിപ്റ്റ് URL നൽകിയിട്ടില്ല' };
     }
     try {
       const response = await fetch(`${targetUrl}?action=ping`, {
@@ -170,9 +164,9 @@ export const apiService = {
         headers: { 'Accept': 'application/json' }
       });
       const data = await response.json();
-      return { success: data.success || data.status === 'online', data, message: 'Connection successful!' };
+      return { success: data.success || data.status === 'online', data, message: 'കണക്ഷൻ വിജയകരമാണ്!' };
     } catch (err) {
-      return { success: false, error: err.message, message: 'Failed to connect. Check deployment and permissions.' };
+      return { success: false, error: err.message, message: 'കണക്റ്റ് ചെയ്യാനായില്ല. അനുമതികൾ പരിശോധിക്കുക.' };
     }
   },
 
@@ -180,7 +174,7 @@ export const apiService = {
   async createRegistration(formData) {
     const gasUrl = this.getGasUrl();
 
-    // If Google Apps Script is configured, call it
+    // If Google Apps Script is configured, call it directly
     if (gasUrl) {
       try {
         const response = await fetch(gasUrl, {
@@ -192,38 +186,35 @@ export const apiService = {
         });
         const res = await response.json();
         if (res && res.success) {
-          // Also sync locally
-          const localList = getLocalData(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
-          localList.unshift(res.registration);
-          setLocalData(STORAGE_KEYS.REGISTRATIONS, localList);
+          inMemoryRegistrations.unshift(res.registration);
+          notifyDataChanged();
           return res;
         } else if (res && res.isDuplicate) {
           return res;
         }
       } catch (err) {
-        console.warn('Google Apps Script request failed, falling back to local database:', err);
+        console.warn('Google Apps Script request failed, using in-memory state:', err);
       }
     }
 
-    // Local Database Handler (Instant & Offline-resilient)
-    const list = getLocalData(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
+    // In-memory Handler
     const type = formData.registrationType || formData.type;
     const mobile = (formData.mobileNumber || '').trim();
 
     // Duplicate Check
-    const exists = list.find(r => r.mobileNumber === mobile && r.registrationType === type);
+    const exists = inMemoryRegistrations.find(r => r.mobileNumber === mobile && r.registrationType === type);
     if (exists) {
       return {
         success: false,
         isDuplicate: true,
-        message: `A registration already exists with this mobile number for ${type}. (Registration ID: ${exists.registrationId})`
+        message: `ഈ മൊബൈൽ നമ്പറിൽ ഇതിനകം രജിസ്ട്രേഷൻ നിലവിലുണ്ട്. (രജിസ്ട്രേഷൻ ഐഡി: ${exists.registrationId})`
       };
     }
 
     // Generate unique ID
     const prefix = type === 'Student Parent' ? 'HP-SP' : 'HP-NG';
     const startNum = type === 'Student Parent' ? 1000 : 2000;
-    const existingNums = list
+    const existingNums = inMemoryRegistrations
       .filter(r => r.registrationId && r.registrationId.startsWith(prefix))
       .map(r => {
         const parts = r.registrationId.split('-');
@@ -251,10 +242,9 @@ export const apiService = {
       updatedDate: now.toLocaleDateString()
     };
 
-    list.unshift(newRecord);
-    setLocalData(STORAGE_KEYS.REGISTRATIONS, list);
-
-    this.logActivity('PUBLIC', 'Created new registration', newId);
+    inMemoryRegistrations.unshift(newRecord);
+    this.logActivity('PUBLIC', 'പുതിയ രജിസ്ട്രേഷൻ സൃഷ്ടിച്ചു', newId);
+    notifyDataChanged();
 
     return {
       success: true,
@@ -276,16 +266,16 @@ export const apiService = {
         const response = await fetch(`${gasUrl}?${queryParams}`, { method: 'GET' });
         const res = await response.json();
         if (res && res.success && Array.isArray(res.data)) {
-          setLocalData(STORAGE_KEYS.REGISTRATIONS, res.data);
+          inMemoryRegistrations = res.data;
           return res;
         }
       } catch (err) {
-        console.warn('Failed to fetch from Google Apps Script, using local data:', err);
+        console.warn('Failed to fetch from Google Apps Script, using memory:', err);
       }
     }
 
-    // Local handling
-    let list = getLocalData(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
+    // In-memory filtering
+    let list = [...inMemoryRegistrations];
     const search = (params.search || '').toLowerCase().trim();
     const typeFilter = params.type || '';
     const deptFilter = params.department || '';
@@ -319,7 +309,7 @@ export const apiService = {
 
     if (gasUrl) {
       try {
-        const response = await fetch(gasUrl, {
+        await fetch(gasUrl, {
           method: 'POST',
           body: JSON.stringify({
             action: 'updateRegistration',
@@ -327,51 +317,55 @@ export const apiService = {
             adminId
           })
         });
-        const res = await response.json();
-        if (res.success) {
-          // update local copy
-        }
       } catch (e) {
-        console.warn('Update via GAS failed, using local update:', e);
+        console.warn('Update via GAS failed, updating in-memory:', e);
       }
     }
 
-    const list = getLocalData(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
-    const index = list.findIndex(r => r.registrationId === registrationData.registrationId);
+    const index = inMemoryRegistrations.findIndex(r => r.registrationId === registrationData.registrationId);
     if (index !== -1) {
-      list[index] = {
-        ...list[index],
+      inMemoryRegistrations[index] = {
+        ...inMemoryRegistrations[index],
         ...registrationData,
         updatedDate: new Date().toLocaleDateString()
       };
-      setLocalData(STORAGE_KEYS.REGISTRATIONS, list);
-      this.logActivity(adminId, 'Updated registration details', registrationData.registrationId);
-      return { success: true, message: 'Registration updated successfully', registration: list[index] };
+      this.logActivity(adminId, 'രജിസ്ട്രേഷൻ വിവരങ്ങൾ പുതുക്കി', registrationData.registrationId);
+      notifyDataChanged();
+      return { success: true, message: 'രജിസ്ട്രേഷൻ വിജയകരമായി പുതുക്കി', registration: inMemoryRegistrations[index] };
     }
 
-    return { success: false, message: 'Registration not found' };
+    return { success: false, message: 'രജിസ്ട്രേഷൻ കണ്ടെത്താനായില്ല' };
   },
 
-  // Admin: Delete registration
+  // Admin: Delete registration (Requirement 3: Delete actual record from Google Sheets & in-memory)
   async deleteRegistration(id, adminId = 'ADMIN') {
     const gasUrl = this.getGasUrl();
+    let backendSuccess = false;
 
     if (gasUrl) {
       try {
-        await fetch(gasUrl, {
+        const response = await fetch(gasUrl, {
           method: 'POST',
           body: JSON.stringify({ action: 'deleteRegistration', id, adminId })
         });
+        const res = await response.json();
+        if (res && res.success) {
+          backendSuccess = true;
+        }
       } catch (e) {
-        console.warn('GAS delete failed, deleting locally:', e);
+        console.warn('GAS delete request error:', e);
       }
     }
 
-    const list = getLocalData(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
-    const filtered = list.filter(r => r.registrationId !== id);
-    setLocalData(STORAGE_KEYS.REGISTRATIONS, filtered);
-    this.logActivity(adminId, 'Deleted registration record', id);
-    return { success: true, message: 'Registration deleted successfully' };
+    inMemoryRegistrations = inMemoryRegistrations.filter(r => r.registrationId !== id);
+    this.logActivity(adminId, 'രജിസ്ട്രേഷൻ നീക്കം ചെയ്തു', id);
+    notifyDataChanged();
+
+    return { 
+      success: true, 
+      backendDeleted: backendSuccess,
+      message: 'രജിസ്ട്രേഷൻ വിജയകരമായി നീക്കം ചെയ്തു' 
+    };
   },
 
   // Admin: Update attendance
@@ -385,20 +379,19 @@ export const apiService = {
           body: JSON.stringify({ action: 'updateAttendance', id, status, adminId })
         });
       } catch (e) {
-        console.warn('GAS attendance update failed, falling back locally:', e);
+        console.warn('GAS attendance update failed:', e);
       }
     }
 
-    const list = getLocalData(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
-    const index = list.findIndex(r => r.registrationId === id);
+    const index = inMemoryRegistrations.findIndex(r => r.registrationId === id);
     if (index !== -1) {
-      list[index].attendanceStatus = status;
-      list[index].updatedDate = new Date().toLocaleDateString();
-      setLocalData(STORAGE_KEYS.REGISTRATIONS, list);
-      this.logActivity(adminId, `Marked attendance as ${status}`, id);
-      return { success: true, message: `Attendance updated to ${status}` };
+      inMemoryRegistrations[index].attendanceStatus = status;
+      inMemoryRegistrations[index].updatedDate = new Date().toLocaleDateString();
+      this.logActivity(adminId, `ഹാജർ രേഖപ്പെടുത്തി: ${status}`, id);
+      notifyDataChanged();
+      return { success: true, message: `ഹാജർ നില പുതുക്കി` };
     }
-    return { success: false, message: 'Registration not found' };
+    return { success: false, message: 'രജിസ്ട്രേഷൻ കണ്ടെത്താനായില്ല' };
   },
 
   // Admin: Dashboard stats
@@ -413,11 +406,10 @@ export const apiService = {
           return res;
         }
       } catch (e) {
-        // fallback to local computation
+        // fallback to memory
       }
     }
 
-    const list = getLocalData(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
     let studentParentRegs = 0;
     let guestRegs = 0;
     let totalParents = 0;
@@ -427,7 +419,7 @@ export const apiService = {
     let presentCount = 0;
     let absentCount = 0;
 
-    list.forEach(r => {
+    inMemoryRegistrations.forEach(r => {
       const parents = parseInt(r.parentsAttending, 10) || 0;
       const guests = parseInt(r.guestsCount, 10) || 0;
 
@@ -488,17 +480,16 @@ export const apiService = {
         if (res && res.success) {
           const session = {
             ...res.admin,
-            expiresAt: Date.now() + 8 * 60 * 60 * 1000 // 8 hours
+            expiresAt: Date.now() + 8 * 60 * 60 * 1000
           };
           localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(session));
           return res;
         }
       } catch (e) {
-        console.warn('GAS login failed or offline:', e);
+        console.warn('GAS login failed:', e);
       }
     }
 
-    // Default built-in secure credentials verification
     const cleanUser = (username || '').trim().toLowerCase();
     if ((cleanUser === 'admin' || cleanUser === 'admin@thazkiya.com') && password === 'thazkiya@2026') {
       const session = {
@@ -509,11 +500,11 @@ export const apiService = {
         expiresAt: Date.now() + 8 * 60 * 60 * 1000
       };
       localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(session));
-      this.logActivity('ADM-001', 'Admin login successful', 'N/A');
+      this.logActivity('ADM-001', 'അഡ്മിൻ ലോഗിൻ ചെയ്തു', 'N/A');
       return { success: true, admin: session };
     }
 
-    return { success: false, message: 'Invalid username or password. Default is admin / thazkiya@2026' };
+    return { success: false, message: 'തെറ്റായ ഉപയോക്തൃനാമം അല്ലെങ്കിൽ പാസ്‌വേഡ്' };
   },
 
   getAuthSession() {
@@ -534,7 +525,7 @@ export const apiService = {
   logout() {
     const session = this.getAuthSession();
     if (session) {
-      this.logActivity(session.adminId, 'Admin logged out', 'N/A');
+      this.logActivity(session.adminId, 'അഡ്മിൻ ലോഗൗട്ട് ചെയ്തു', 'N/A');
     }
     localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
     notifyDataChanged();
@@ -542,7 +533,6 @@ export const apiService = {
 
   // Activity logs
   logActivity(adminId, action, regId) {
-    const logs = getLocalData(STORAGE_KEYS.ACTIVITY_LOGS, INITIAL_LOGS);
     const now = new Date();
     const logItem = {
       logId: 'LOG-' + Math.floor(1000 + Math.random() * 9000),
@@ -552,21 +542,14 @@ export const apiService = {
       date: now.toLocaleDateString(),
       time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
-    logs.unshift(logItem);
-    setLocalData(STORAGE_KEYS.ACTIVITY_LOGS, logs.slice(0, 100));
+    inMemoryLogs.unshift(logItem);
+    if (inMemoryLogs.length > 100) inMemoryLogs.pop();
   },
 
   async getActivityLogs() {
     return {
       success: true,
-      logs: getLocalData(STORAGE_KEYS.ACTIVITY_LOGS, INITIAL_LOGS)
+      logs: inMemoryLogs
     };
-  },
-
-  // Reset database to initial seed (useful for admin testing)
-  resetToSeed() {
-    setLocalData(STORAGE_KEYS.REGISTRATIONS, INITIAL_REGISTRATIONS);
-    setLocalData(STORAGE_KEYS.ACTIVITY_LOGS, INITIAL_LOGS);
-    return { success: true, message: 'Database reset to initial demo state.' };
   }
 };

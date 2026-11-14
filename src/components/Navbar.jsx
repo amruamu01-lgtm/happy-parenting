@@ -38,15 +38,15 @@ export default function Navbar({ activePage, setActivePage, isAdminLoggedIn, onL
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
             <button
               onClick={() => navigateTo('home')}
-              className={`text-sm font-medium transition-colors hover:text-gold-champagne flex items-center space-x-1 ${
+              className={`text-sm font-malayalam font-medium transition-colors hover:text-gold-champagne flex items-center space-x-1.5 ${
                 activePage === 'home' ? 'text-gold-antique font-semibold border-b-2 border-gold-antique pb-1' : 'text-ivory/90'
               }`}
             >
-              <Home className="w-4 h-4 mr-1 text-gold-champagne" />
-              Home
+              <Home className="w-4 h-4 text-gold-champagne" />
+              <span>ഹോം</span>
             </button>
 
             <button
@@ -57,9 +57,9 @@ export default function Navbar({ activePage, setActivePage, isAdminLoggedIn, onL
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
               }}
-              className="text-sm font-medium text-ivory/90 hover:text-gold-champagne transition-colors"
+              className="text-sm font-malayalam font-medium text-ivory/90 hover:text-gold-champagne transition-colors"
             >
-              About Programme
+              പരിപാടിയെക്കുറിച്ച്
             </button>
 
             <button
@@ -70,23 +70,23 @@ export default function Navbar({ activePage, setActivePage, isAdminLoggedIn, onL
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
               }}
-              className="px-5 py-2 rounded-full bg-gradient-to-r from-gold-antique to-amber-warm text-emerald-deep font-semibold text-sm shadow-gold hover:shadow-lg hover:brightness-110 transition-all flex items-center space-x-2 border border-gold-champagne"
+              className="px-5 py-2 rounded-full bg-gradient-to-r from-gold-antique to-amber-warm text-emerald-deep font-malayalam font-bold text-sm shadow-gold hover:shadow-lg hover:brightness-110 transition-all flex items-center space-x-2 border border-gold-champagne"
             >
               <Calendar className="w-4 h-4" />
-              <span>Register Now</span>
+              <span>രജിസ്റ്റർ ചെയ്യുക</span>
             </button>
 
             {/* Admin Portal Link */}
             <button
               onClick={() => navigateTo(isAdminLoggedIn ? 'admin-dashboard' : 'admin-login')}
-              className={`text-xs px-3.5 py-1.5 rounded-lg border transition-all flex items-center space-x-1.5 ${
+              className={`text-xs font-malayalam px-3.5 py-1.5 rounded-lg border transition-all flex items-center space-x-1.5 ${
                 activePage.startsWith('admin') 
                   ? 'bg-burgundy-deep text-white border-gold-antique' 
                   : 'border-gold-antique/40 text-gold-champagne hover:bg-emerald-forest'
               }`}
             >
               <Shield className="w-3.5 h-3.5 text-gold-champagne" />
-              <span>{isAdminLoggedIn ? 'Admin Panel' : 'Admin Login'}</span>
+              <span>{isAdminLoggedIn ? 'അഡ്മിൻ പാനൽ' : 'അഡ്മിൻ ലോഗിൻ'}</span>
             </button>
           </nav>
 
@@ -100,15 +100,15 @@ export default function Navbar({ activePage, setActivePage, isAdminLoggedIn, onL
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
               }}
-              className="px-3 py-1.5 rounded-full bg-gold-antique text-emerald-deep font-bold text-xs"
+              className="px-3 py-1.5 rounded-full bg-gold-antique text-emerald-deep font-malayalam font-bold text-xs"
             >
-              Register
+              രജിസ്റ്റർ ചെയ്യുക
             </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg text-gold-champagne hover:text-white hover:bg-emerald-forest transition-colors focus:outline-none"
-              aria-label="Toggle Navigation Menu"
+              aria-label="മെനു തുറക്കുക"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -122,13 +122,13 @@ export default function Navbar({ activePage, setActivePage, isAdminLoggedIn, onL
           <div className="flex flex-col space-y-2">
             <button
               onClick={() => navigateTo('home')}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium ${
+              className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-malayalam font-medium ${
                 activePage === 'home' ? 'bg-emerald-forest text-gold-antique' : 'text-ivory hover:bg-emerald-forest/60'
               }`}
             >
               <div className="flex items-center space-x-2">
                 <Home className="w-4 h-4 text-gold-champagne" />
-                <span>Home</span>
+                <span>ഹോം</span>
               </div>
               <ChevronRight className="w-4 h-4 text-gold-champagne/60" />
             </button>
@@ -141,30 +141,30 @@ export default function Navbar({ activePage, setActivePage, isAdminLoggedIn, onL
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
               }}
-              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-ivory hover:bg-emerald-forest/60"
+              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-malayalam font-medium text-ivory hover:bg-emerald-forest/60"
             >
-              <span>About Programme</span>
+              <span>പരിപാടിയെക്കുറിച്ച്</span>
               <ChevronRight className="w-4 h-4 text-gold-champagne/60" />
             </button>
 
             <button
               onClick={() => navigateTo('student-parent-register')}
-              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-ivory hover:bg-emerald-forest/60"
+              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-malayalam font-medium text-ivory hover:bg-emerald-forest/60"
             >
               <div className="flex items-center space-x-2">
                 <Users className="w-4 h-4 text-amber-warm" />
-                <span>Student Parent Registration (രക്ഷിതാക്കൾ)</span>
+                <span>രക്ഷിതാക്കളുടെ രജിസ്ട്രേഷൻ (Student Parent)</span>
               </div>
               <ChevronRight className="w-4 h-4 text-gold-champagne/60" />
             </button>
 
             <button
               onClick={() => navigateTo('normal-guest-register')}
-              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-ivory hover:bg-emerald-forest/60"
+              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-malayalam font-medium text-ivory hover:bg-emerald-forest/60"
             >
               <div className="flex items-center space-x-2">
                 <Users className="w-4 h-4 text-gold-champagne" />
-                <span>Normal Guest Registration (മറ്റു അതിഥികൾ)</span>
+                <span>മറ്റു അതിഥികളുടെ രജിസ്ട്രേഷൻ (Normal Guest)</span>
               </div>
               <ChevronRight className="w-4 h-4 text-gold-champagne/60" />
             </button>
@@ -172,10 +172,10 @@ export default function Navbar({ activePage, setActivePage, isAdminLoggedIn, onL
             <div className="pt-2 border-t border-gold-antique/20">
               <button
                 onClick={() => navigateTo(isAdminLoggedIn ? 'admin-dashboard' : 'admin-login')}
-                className="w-full flex items-center justify-center space-x-2 py-2.5 rounded-lg bg-burgundy-deep text-white text-xs font-semibold uppercase tracking-wider border border-gold-antique/40 shadow-sm"
+                className="w-full flex items-center justify-center space-x-2 py-2.5 rounded-lg bg-burgundy-deep text-white text-xs font-malayalam font-semibold tracking-wider border border-gold-antique/40 shadow-sm"
               >
                 <Shield className="w-4 h-4 text-gold-champagne" />
-                <span>{isAdminLoggedIn ? 'Go to Admin Dashboard' : 'Admin Secure Login'}</span>
+                <span>{isAdminLoggedIn ? 'അഡ്മിൻ ഡാഷ്‌ബോർഡിലേക്ക്' : 'അഡ്മിൻ ലോഗിൻ'}</span>
               </button>
             </div>
           </div>

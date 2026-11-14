@@ -13,6 +13,11 @@
   }
 }
 
+.font-malayalam {
+  font-family: 'Noto Sans Malayalam', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+}
+
 /* Islamic Arch & Card Styles */
 .islamic-arch {
   border-top-left-radius: 999px;

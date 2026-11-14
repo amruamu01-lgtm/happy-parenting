@@ -2,16 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { 
   CheckSquare, 
   Search, 
-  Filter, 
   CheckCircle2, 
   XCircle, 
   RefreshCw, 
-  Phone, 
-  Users, 
-  Percent,
-  Calendar,
-  Sparkles,
-  ChevronDown
+  Percent
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
@@ -90,7 +84,7 @@ export default function AttendanceManagement({ adminUser }) {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-malayalam">
       
       {/* Attendance Header & Live Metric Bar */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/30 shadow-card space-y-6">
@@ -98,26 +92,27 @@ export default function AttendanceManagement({ adminUser }) {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gold-antique/20 pb-4">
           <div>
             <div className="flex items-center space-x-2">
-              <span className="px-3 py-0.5 rounded-full bg-emerald-forest/10 text-emerald-deep font-bold text-xs uppercase tracking-wider border border-emerald-deep/20">
-                Live Gate Desk
+              <span className="px-3 py-0.5 rounded-full bg-emerald-forest/10 text-emerald-deep font-bold text-xs uppercase tracking-wider border border-emerald-deep/20 font-sans">
+                Attendance Desk
               </span>
-              <span className="text-xs text-text-muted">Real-time Sheets Sync</span>
+              <span className="text-xs text-text-muted">തത്സമയ ഹാജർ പരിശോധന</span>
             </div>
+            {/* Main Heading in English */}
             <h1 className="font-heading font-black text-2xl sm:text-3xl text-emerald-deep mt-1">
-              Attendance Verification Portal
+              Attendance Management
             </h1>
             <p className="text-xs text-text-secondary">
-              Mark participant arrival at the auditorium entrance. Instant cross-device update.
+              ഓഡിറ്റോറിയം പ്രവേശന കവാടത്തിൽ ഹാജർ രേഖപ്പെടുത്തുക. എല്ലാ ഉപകരണങ്ങളിലും തത്സമയം ലഭ്യമാകും.
             </p>
           </div>
 
           <button
             onClick={loadData}
-            title="Refresh Attendance"
+            title="ഹാജർ നില പുതുക്കുക"
             className="p-2.5 rounded-xl border border-gold-antique/40 bg-ivory/50 text-emerald-deep hover:bg-ivory flex items-center space-x-1.5 text-xs font-semibold"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            <span>Sync</span>
+            <span>പുതുക്കുക</span>
           </button>
         </div>
 
@@ -126,13 +121,13 @@ export default function AttendanceManagement({ adminUser }) {
           
           <div className="p-4 rounded-2xl bg-emerald-deep text-ivory border border-gold-antique shadow-md flex items-center justify-between">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-gold-champagne block">
-                Total Present
+              <span className="text-[11px] font-bold text-gold-champagne block">
+                ആകെ ഹാജരുള്ളവർ (Present)
               </span>
-              <span className="font-heading font-black text-3xl text-ivory">
+              <span className="font-heading font-black text-3xl text-ivory font-mono">
                 {presentCount}
               </span>
-              <span className="text-[10px] text-ivory/70 block mt-0.5">Participants Checked In</span>
+              <span className="text-[10px] text-ivory/70 block mt-0.5">ചെക്ക് ഇൻ ചെയ്തവർ</span>
             </div>
             <div className="w-12 h-12 rounded-xl bg-emerald-forest border border-gold-antique/40 flex items-center justify-center text-gold-champagne">
               <CheckCircle2 className="w-6 h-6 text-gold-champagne" />
@@ -141,13 +136,13 @@ export default function AttendanceManagement({ adminUser }) {
 
           <div className="p-4 rounded-2xl bg-burgundy-surface border border-burgundy-deep/30 flex items-center justify-between">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-burgundy-deep block">
-                Total Absent
+              <span className="text-[11px] font-bold text-burgundy-deep block">
+                ഹാജരില്ലാത്തവർ (Absent)
               </span>
-              <span className="font-heading font-black text-3xl text-burgundy-deep">
+              <span className="font-heading font-black text-3xl text-burgundy-deep font-mono">
                 {absentCount}
               </span>
-              <span className="text-[10px] text-burgundy-deep/70 block mt-0.5">Pending Arrival</span>
+              <span className="text-[10px] text-burgundy-deep/70 block mt-0.5">എത്തിച്ചേരാനുള്ളവർ</span>
             </div>
             <div className="w-12 h-12 rounded-xl bg-white border border-burgundy-deep/30 flex items-center justify-center text-burgundy-deep">
               <XCircle className="w-6 h-6" />
@@ -156,13 +151,13 @@ export default function AttendanceManagement({ adminUser }) {
 
           <div className="p-4 rounded-2xl bg-gold-light border border-gold-antique/40 flex items-center justify-between">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-gold-dark block">
-                Attendance Turnout
+              <span className="text-[11px] font-bold text-gold-dark block">
+                ഹാജർ ശതമാനം (Turnout)
               </span>
-              <span className="font-heading font-black text-3xl text-gold-dark">
+              <span className="font-heading font-black text-3xl text-gold-dark font-mono">
                 {attendanceRate}%
               </span>
-              <span className="text-[10px] text-text-muted block mt-0.5">Of {totalCount} total registered</span>
+              <span className="text-[10px] text-text-muted block mt-0.5">ആകെ {totalCount} രജിസ്ട്രേഷനുകളിൽ</span>
             </div>
             <div className="w-12 h-12 rounded-xl bg-white border border-gold-antique/40 flex items-center justify-center text-gold-dark">
               <Percent className="w-6 h-6" />
@@ -178,7 +173,7 @@ export default function AttendanceManagement({ adminUser }) {
             <Search className="w-4 h-4 text-gold-antique absolute left-3.5 top-3" />
             <input
               type="text"
-              placeholder="Search by ID, name, mobile, student..."
+              placeholder="ഐഡി, പേര്, മൊബൈൽ എന്നിവ തിരയുക..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gold-antique/40 bg-ivory/30 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white"
@@ -191,9 +186,9 @@ export default function AttendanceManagement({ adminUser }) {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="w-full py-2.5 px-3 rounded-xl border border-gold-antique/40 bg-ivory/30 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-emerald-deep font-semibold"
             >
-              <option value="">All Attendance Status</option>
-              <option value="Present">Present Only (ഹാജർ ഉള്ളവർ)</option>
-              <option value="Absent">Absent Only (ഹാജരില്ലാത്തവർ)</option>
+              <option value="">എല്ലാ ഹാജർ നിലയും</option>
+              <option value="Present">ഹാജരുള്ളവർ (Present Only)</option>
+              <option value="Absent">ഹാജരില്ലാത്തവർ (Absent Only)</option>
             </select>
           </div>
 
@@ -203,9 +198,9 @@ export default function AttendanceManagement({ adminUser }) {
               onChange={(e) => setTypeFilter(e.target.value)}
               className="w-full py-2.5 px-3 rounded-xl border border-gold-antique/40 bg-ivory/30 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-emerald-deep"
             >
-              <option value="">All Categories</option>
-              <option value="Student Parent">Student Parent Only</option>
-              <option value="Normal Guest">Normal Guest Only</option>
+              <option value="">എല്ലാ വിഭാഗങ്ങളും</option>
+              <option value="Student Parent">Student Parent (രക്ഷിതാക്കൾ)</option>
+              <option value="Normal Guest">Normal Guest (അതിഥികൾ)</option>
             </select>
           </div>
 
@@ -215,7 +210,7 @@ export default function AttendanceManagement({ adminUser }) {
               onChange={(e) => setDeptFilter(e.target.value)}
               className="w-full py-2.5 px-3 rounded-xl border border-gold-antique/40 bg-ivory/30 text-xs text-text-primary focus:outline-none focus:ring-2 focus:ring-emerald-deep"
             >
-              <option value="">All Departments</option>
+              <option value="">എല്ലാ ഡിപ്പാർട്ട്മെന്റുകളും</option>
               <option value="Dars">Dars Only</option>
               <option value="Hifz">Hifz Only</option>
             </select>
@@ -232,15 +227,15 @@ export default function AttendanceManagement({ adminUser }) {
         <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-emerald-deep text-gold-champagne uppercase tracking-wider text-[11px] border-b border-gold-antique/40">
+              <tr className="bg-emerald-deep text-gold-champagne uppercase text-[11px] border-b border-gold-antique/40">
                 <th className="py-3.5 px-4 font-bold">Reg ID</th>
-                <th className="py-3.5 px-4 font-bold">Participant Name</th>
-                <th className="py-3.5 px-4 font-bold">Mobile</th>
-                <th className="py-3.5 px-4 font-bold">Category</th>
-                <th className="py-3.5 px-4 font-bold">Dept (Student Parent)</th>
-                <th className="py-3.5 px-4 font-bold">Attendees</th>
-                <th className="py-3.5 px-4 font-bold">Status</th>
-                <th className="py-3.5 px-4 font-bold text-right">Quick Mark Action</th>
+                <th className="py-3.5 px-4 font-bold">പേര്</th>
+                <th className="py-3.5 px-4 font-bold">മൊബൈൽ</th>
+                <th className="py-3.5 px-4 font-bold">വിഭാഗം</th>
+                <th className="py-3.5 px-4 font-bold">ഡിപ്പാർട്ട്മെന്റ്</th>
+                <th className="py-3.5 px-4 font-bold">ആളുകൾ</th>
+                <th className="py-3.5 px-4 font-bold">ഹാജർ നില</th>
+                <th className="py-3.5 px-4 font-bold text-right">ഹാജർ രേഖപ്പെടുത്തൽ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gold-antique/10">
@@ -258,7 +253,7 @@ export default function AttendanceManagement({ adminUser }) {
                       {item.name}
                       {item.studentName && (
                         <span className="block text-[11px] font-normal text-text-secondary">
-                          Student: {item.studentName}
+                          വിദ്യാർത്ഥി: {item.studentName}
                         </span>
                       )}
                     </td>
@@ -269,7 +264,7 @@ export default function AttendanceManagement({ adminUser }) {
                       <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
                         item.registrationType === 'Student Parent' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                       }`}>
-                        {item.registrationType}
+                        {item.registrationType === 'Student Parent' ? 'രക്ഷിതാവ്' : 'അതിഥി'}
                       </span>
                     </td>
                     <td className="py-3 px-4">
@@ -281,7 +276,7 @@ export default function AttendanceManagement({ adminUser }) {
                         <span className="text-text-muted">—</span>
                       )}
                     </td>
-                    <td className="py-3 px-4 font-bold text-text-primary">
+                    <td className="py-3 px-4 font-bold text-text-primary font-mono">
                       {headcount}
                     </td>
                     <td className="py-3 px-4">
@@ -289,7 +284,7 @@ export default function AttendanceManagement({ adminUser }) {
                         isPresent ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
                       }`}>
                         {isPresent ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                        <span>{item.attendanceStatus || 'Absent'}</span>
+                        <span>{isPresent ? 'ഹാജർ (Present)' : 'ഹാജരില്ല (Absent)'}</span>
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right">
@@ -302,7 +297,7 @@ export default function AttendanceManagement({ adminUser }) {
                             : 'bg-emerald-deep text-gold-champagne hover:bg-emerald-forest border border-gold-antique/40'
                         }`}
                       >
-                        {isBusy ? 'Saving...' : isPresent ? 'Mark Absent' : 'Mark Present'}
+                        {isBusy ? 'സേവ് ചെയ്യുന്നു...' : isPresent ? 'ഹാജരില്ല എന്ന് മാറ്റുക' : 'ഹാജർ രേഖപ്പെടുത്തുക'}
                       </button>
                     </td>
                   </tr>
@@ -331,31 +326,31 @@ export default function AttendanceManagement({ adminUser }) {
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                     isPresent ? 'bg-emerald-200 text-emerald-900' : 'bg-gray-100 text-gray-700'
                   }`}>
-                    {item.attendanceStatus || 'Absent'}
+                    {isPresent ? 'ഹാജർ' : 'ഹാജരില്ല'}
                   </span>
                 </div>
 
                 <div className="space-y-1 text-xs">
                   <p className="font-bold text-text-primary text-sm">{item.name}</p>
                   {item.studentName && (
-                    <p className="text-emerald-deep font-medium">Student: {item.studentName} ({item.studentDepartment})</p>
+                    <p className="text-emerald-deep font-medium">വിദ്യാർത്ഥി: {item.studentName} ({item.studentDepartment})</p>
                   )}
-                  <p className="text-text-secondary font-mono">Mobile: {item.mobileNumber}</p>
-                  <p className="text-text-muted">Headcount: <strong>{headcount} Attendees</strong></p>
+                  <p className="text-text-secondary font-mono">മൊബൈൽ: {item.mobileNumber}</p>
+                  <p className="text-text-muted">ആളുകൾ: <strong>{headcount} പേർ</strong></p>
                 </div>
 
                 <div className="pt-3 mt-2 border-t border-gold-antique/15 flex justify-end">
                   <button
                     onClick={() => handleToggleAttendance(item)}
                     disabled={isBusy}
-                    className={`w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-2 transition-all ${
+                    className={`w-full py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
                       isPresent
                         ? 'bg-rose-100 text-rose-800 hover:bg-rose-200'
                         : 'bg-emerald-deep text-gold-champagne hover:bg-emerald-forest'
                     }`}
                   >
                     {isPresent ? <XCircle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4 text-gold-antique" />}
-                    <span>{isBusy ? 'Updating...' : isPresent ? 'Mark as Absent' : 'Mark as Present'}</span>
+                    <span>{isBusy ? 'പുതുക്കുന്നു...' : isPresent ? 'ഹാജരില്ല എന്ന് മാറ്റുക' : 'ഹാജർ രേഖപ്പെടുത്തുക'}</span>
                   </button>
                 </div>
               </div>

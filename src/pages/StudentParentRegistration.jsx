@@ -11,7 +11,6 @@ import {
   CheckCircle2, 
   AlertCircle, 
   Loader2,
-  ShieldCheck,
   Plus,
   Minus
 } from 'lucide-react';
@@ -24,7 +23,7 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
     mobileNumber: '',
     whatsappNumber: '',
     studentName: '',
-    studentDepartment: 'Dars', // Default to Dars (Strictly Dars or Hifz)
+    studentDepartment: 'Dars', // Strictly Dars or Hifz
     relationship: 'Father', // Father, Mother, Guardian
     parentsAttending: 1,
     addressPlace: '',
@@ -38,42 +37,42 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
   const validate = () => {
     const errs = {};
     if (!formData.parentName.trim()) {
-      errs.parentName = 'Parent Name is required / രക്ഷിതാവിന്റെ പേര് നൽകുക';
+      errs.parentName = 'രക്ഷിതാവിന്റെ പേര് നൽകുക';
     }
 
     const mobileClean = formData.mobileNumber.replace(/\D/g, '');
     if (!formData.mobileNumber.trim()) {
-      errs.mobileNumber = 'Mobile Number is required / മൊബൈൽ നമ്പർ നൽകുക';
+      errs.mobileNumber = 'മൊബൈൽ നമ്പർ നൽകുക';
     } else if (mobileClean.length < 10) {
-      errs.mobileNumber = 'Please enter a valid 10-digit mobile number';
+      errs.mobileNumber = 'സാധുവായ 10 അക്ക മൊബൈൽ നമ്പർ നൽകുക';
     }
 
     const waClean = (formData.sameAsMobile ? formData.mobileNumber : formData.whatsappNumber).replace(/\D/g, '');
     if (!formData.sameAsMobile && !formData.whatsappNumber.trim()) {
-      errs.whatsappNumber = 'WhatsApp Number is required / വാട്സ്ആപ്പ് നമ്പർ നൽകുക';
+      errs.whatsappNumber = 'വാട്സ്ആപ്പ് നമ്പർ നൽകുക';
     } else if (waClean.length < 10) {
-      errs.whatsappNumber = 'Please enter a valid 10-digit WhatsApp number';
+      errs.whatsappNumber = 'സാധുവായ 10 അക്ക വാട്സ്ആപ്പ് നമ്പർ നൽകുക';
     }
 
     if (!formData.studentName.trim()) {
-      errs.studentName = 'Student Name is required / വിദ്യാർത്ഥിയുടെ പേര് നൽകുക';
+      errs.studentName = 'വിദ്യാർത്ഥിയുടെ പേര് നൽകുക';
     }
 
     // Strict validation: Only Dars or Hifz
     if (formData.studentDepartment !== 'Dars' && formData.studentDepartment !== 'Hifz') {
-      errs.studentDepartment = 'Department must be Dars or Hifz';
+      errs.studentDepartment = 'വിഭാഗം Dars അല്ലെങ്കിൽ Hifz ആയിരിക്കണം';
     }
 
     if (!formData.relationship) {
-      errs.relationship = 'Please select relationship / ബന്ധം തിരഞ്ഞെടുക്കുക';
+      errs.relationship = 'വിദ്യാർത്ഥിയുമായുള്ള ബന്ധം തിരഞ്ഞെടുക്കുക';
     }
 
     if (formData.parentsAttending < 1) {
-      errs.parentsAttending = 'At least 1 parent must be attending';
+      errs.parentsAttending = 'കുറഞ്ഞത് ഒരാളെങ്കിലും പങ്കെടുക്കണം';
     }
 
     if (!formData.addressPlace.trim()) {
-      errs.addressPlace = 'Address / Place is required / സ്ഥലം നൽകുക';
+      errs.addressPlace = 'സ്ഥലം / മേൽവിലാസം നൽകുക';
     }
 
     setErrors(errs);
@@ -110,10 +109,10 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
         setActivePage('registration-success');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        setServerError(result.message || 'Registration failed. Please check details.');
+        setServerError(result.message || 'രജിസ്ട്രേഷൻ പരാജയപ്പെട്ടു. ദയവായി വിവരങ്ങൾ പരിശോധിക്കുക.');
       }
     } catch (err) {
-      setServerError('Network or server error occurred. Please try again.');
+      setServerError('സെർവർ തകരാർ സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.');
     } finally {
       setIsSubmitting(false);
     }
@@ -143,42 +142,42 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
       {/* Back Navigation */}
       <button
         onClick={() => { setActivePage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-        className="inline-flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-emerald-forest hover:text-emerald-deep mb-6 transition-colors"
+        className="inline-flex items-center space-x-2 text-xs font-malayalam font-semibold text-emerald-forest hover:text-emerald-deep mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        <span>Back to Home</span>
+        <span>ഹോമിലേക്ക് മടങ്ങുക</span>
       </button>
 
       {/* Main Card */}
       <div className="bg-white rounded-3xl border-2 border-gold-antique/40 shadow-card overflow-hidden">
         
-        {/* Header Banner */}
+        {/* Header Banner - Main Heading in English */}
         <div className="bg-emerald-deep text-ivory p-6 sm:p-8 text-center relative border-b-2 border-gold-antique">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-emerald-forest/80 border border-gold-antique/40 text-xs text-gold-champagne mb-3">
             <Users className="w-4 h-4 text-amber-warm" />
-            <span>Thazkiya Academy Official Portal</span>
+            <span className="font-malayalam">താസ്കിയ അക്കാദമി ഔദ്യോഗിക പോർട്ടൽ</span>
           </div>
 
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-gold-champagne tracking-wide uppercase">
             STUDENT PARENT REGISTRATION
           </h1>
-          <p className="font-malayalam text-base sm:text-lg text-ivory/90 font-medium mt-1">
+          <p className="font-malayalam text-base sm:text-lg text-ivory/95 font-medium mt-1">
             വിദ്യാർത്ഥികളുടെ രക്ഷിതാക്കൾക്കുള്ള രജിസ്ട്രേഷൻ
           </p>
 
           <OrnamentalDivider light className="my-3 opacity-60" />
 
-          <p className="text-xs text-ivory/80 max-w-lg mx-auto">
-            Please fill in the official details of the student and attending parent(s) for the Happy Parenting summit.
+          <p className="font-malayalam text-xs text-ivory/80 max-w-lg mx-auto">
+            ഹാപ്പി പാരന്റിംഗ് സംഗമത്തിൽ പങ്കെടുക്കുന്നതിനായി വിദ്യാർത്ഥിയുടെയും രക്ഷിതാവിന്റെയും കൃത്യമായ വിവരങ്ങൾ രേഖപ്പെടുത്തുക.
           </p>
         </div>
 
         {/* Server Error Alert */}
         {serverError && (
-          <div className="mx-6 mt-6 p-4 rounded-xl bg-burgundy-surface border border-burgundy-deep text-burgundy-deep text-xs font-medium flex items-start space-x-2.5">
+          <div className="mx-6 mt-6 p-4 rounded-xl bg-burgundy-surface border border-burgundy-deep text-burgundy-deep text-xs font-malayalam font-medium flex items-start space-x-2.5">
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <div>
-              <p className="font-bold">Registration Alert</p>
+              <p className="font-bold">രജിസ്ട്രേഷൻ അറിയിപ്പ്</p>
               <p>{serverError}</p>
             </div>
           </div>
@@ -192,17 +191,15 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
             <div className="border-b border-gold-antique/20 pb-2">
               <h3 className="font-heading font-bold text-base text-emerald-deep flex items-center space-x-2">
                 <span className="w-2 h-2 rounded-full bg-gold-antique" />
-                <span>Parent / Guardian Information (രക്ഷിതാവിന്റെ വിവരങ്ങൾ)</span>
+                <span>Parent Information</span>
+                <span className="font-malayalam text-xs font-normal text-text-secondary">(രക്ഷിതാവിന്റെ വിവരങ്ങൾ)</span>
               </h3>
             </div>
 
             {/* Parent Name */}
             <div>
-              <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-1">
-                Parent / Guardian Name <span className="text-burgundy-deep">*</span>
-                <span className="font-malayalam block text-[11px] font-normal text-text-secondary lowercase">
-                  രക്ഷിതാവിന്റെ പേര്
-                </span>
+              <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
+                രക്ഷിതാവിന്റെ പേര് (Parent Name) <span className="text-burgundy-deep">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gold-antique">
@@ -210,16 +207,16 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                 </div>
                 <input
                   type="text"
-                  placeholder="e.g. Muhammed Basheer K."
+                  placeholder="രക്ഷിതാവിന്റെ പൂർണ്ണ പേര് നൽകുക"
                   value={formData.parentName}
                   onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white transition-all ${
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white transition-all ${
                     errors.parentName ? 'border-burgundy-deep' : 'border-gold-antique/40'
                   }`}
                 />
               </div>
               {errors.parentName && (
-                <p className="text-[11px] text-burgundy-deep mt-1">{errors.parentName}</p>
+                <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.parentName}</p>
               )}
             </div>
 
@@ -227,11 +224,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Mobile */}
               <div>
-                <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-1">
-                  Mobile Number <span className="text-burgundy-deep">*</span>
-                  <span className="font-malayalam block text-[11px] font-normal text-text-secondary lowercase">
-                    മൊബൈൽ നമ്പർ
-                  </span>
+                <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
+                  മൊബൈൽ നമ്പർ (Mobile Number) <span className="text-burgundy-deep">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gold-antique">
@@ -239,27 +233,24 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   </div>
                   <input
                     type="tel"
-                    placeholder="10-digit mobile number"
+                    placeholder="10 അക്ക മൊബൈൽ നമ്പർ"
                     maxLength={10}
                     value={formData.mobileNumber}
                     onChange={handleMobileChange}
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white transition-all ${
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white transition-all ${
                       errors.mobileNumber ? 'border-burgundy-deep' : 'border-gold-antique/40'
                     }`}
                   />
                 </div>
                 {errors.mobileNumber && (
-                  <p className="text-[11px] text-burgundy-deep mt-1">{errors.mobileNumber}</p>
+                  <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.mobileNumber}</p>
                 )}
               </div>
 
               {/* WhatsApp */}
               <div>
-                <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-1">
-                  WhatsApp Number <span className="text-burgundy-deep">*</span>
-                  <span className="font-malayalam block text-[11px] font-normal text-text-secondary lowercase">
-                    വാട്സ്ആപ്പ് നമ്പർ
-                  </span>
+                <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
+                  വാട്സ്ആപ്പ് നമ്പർ (WhatsApp Number) <span className="text-burgundy-deep">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-forest">
@@ -268,11 +259,11 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   <input
                     type="tel"
                     disabled={formData.sameAsMobile}
-                    placeholder="10-digit WhatsApp number"
+                    placeholder="10 അക്ക വാട്സ്ആപ്പ് നമ്പർ"
                     maxLength={10}
                     value={formData.sameAsMobile ? formData.mobileNumber : formData.whatsappNumber}
                     onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm transition-all ${
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-mono transition-all ${
                       formData.sameAsMobile ? 'bg-gray-100 text-text-secondary cursor-not-allowed' : 'bg-ivory/30 text-text-primary focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white'
                     } ${errors.whatsappNumber ? 'border-burgundy-deep' : 'border-gold-antique/40'}`}
                   />
@@ -285,12 +276,12 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                     onChange={handleCheckboxChange}
                     className="w-4 h-4 text-emerald-deep rounded border-gold-antique/50 focus:ring-emerald-deep"
                   />
-                  <label htmlFor="sameAsMobile" className="text-xs text-text-secondary cursor-pointer select-none">
-                    Same as Mobile Number (മൊബൈൽ നമ്പർ തന്നെ)
+                  <label htmlFor="sameAsMobile" className="text-xs font-malayalam text-text-secondary cursor-pointer select-none">
+                    മൊബൈൽ നമ്പർ തന്നെ (Same as Mobile)
                   </label>
                 </div>
                 {errors.whatsappNumber && (
-                  <p className="text-[11px] text-burgundy-deep mt-1">{errors.whatsappNumber}</p>
+                  <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.whatsappNumber}</p>
                 )}
               </div>
             </div>
@@ -300,11 +291,8 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
               
               {/* Relationship */}
               <div>
-                <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-1">
-                  Relationship <span className="text-burgundy-deep">*</span>
-                  <span className="font-malayalam block text-[11px] font-normal text-text-secondary lowercase">
-                    വിദ്യാർത്ഥിയുമായുള്ള ബന്ധം
-                  </span>
+                <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
+                  വിദ്യാർത്ഥിയുമായുള്ള ബന്ധം (Relationship) <span className="text-burgundy-deep">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gold-antique">
@@ -313,22 +301,19 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                   <select
                     value={formData.relationship}
                     onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gold-antique/40 bg-ivory/30 text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gold-antique/40 bg-ivory/30 text-text-primary text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white"
                   >
-                    <option value="Father">Father (പിതാവ്)</option>
-                    <option value="Mother">Mother (മാതാവ്)</option>
-                    <option value="Guardian">Guardian (രക്ഷാധികാരി)</option>
+                    <option value="Father">പിതാവ് (Father)</option>
+                    <option value="Mother">മാതാവ് (Mother)</option>
+                    <option value="Guardian">രക്ഷാധികാരി (Guardian)</option>
                   </select>
                 </div>
               </div>
 
               {/* Number of Parents Attending */}
               <div>
-                <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-1">
-                  Number of Parents Attending <span className="text-burgundy-deep">*</span>
-                  <span className="font-malayalam block text-[11px] font-normal text-text-secondary lowercase">
-                    പങ്കെടുക്കുന്ന രക്ഷിതാക്കളുടെ എണ്ണം
-                  </span>
+                <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
+                  പങ്കെടുക്കുന്ന രക്ഷിതാക്കളുടെ എണ്ണം <span className="text-burgundy-deep">*</span>
                 </label>
                 <div className="flex items-center space-x-3 bg-ivory/40 border border-gold-antique/40 rounded-xl p-1.5">
                   <button
@@ -359,17 +344,15 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
             <div className="border-b border-gold-antique/20 pb-2">
               <h3 className="font-heading font-bold text-base text-emerald-deep flex items-center space-x-2">
                 <span className="w-2 h-2 rounded-full bg-gold-antique" />
-                <span>Student Information (വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ)</span>
+                <span>Student Information</span>
+                <span className="font-malayalam text-xs font-normal text-text-secondary">(വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ)</span>
               </h3>
             </div>
 
             {/* Student Name */}
             <div>
-              <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-1">
-                Student Name <span className="text-burgundy-deep">*</span>
-                <span className="font-malayalam block text-[11px] font-normal text-text-secondary lowercase">
-                  വിദ്യാർത്ഥിയുടെ പേര്
-                </span>
+              <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
+                വിദ്യാർത്ഥിയുടെ പേര് (Student Name) <span className="text-burgundy-deep">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gold-antique">
@@ -377,26 +360,23 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                 </div>
                 <input
                   type="text"
-                  placeholder="e.g. Ahmad Faiz"
+                  placeholder="വിദ്യാർത്ഥിയുടെ പൂർണ്ണ പേര് നൽകുക"
                   value={formData.studentName}
                   onChange={(e) => setFormData({ ...formData, studentName: e.target.value })}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white transition-all ${
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white transition-all ${
                     errors.studentName ? 'border-burgundy-deep' : 'border-gold-antique/40'
                   }`}
                 />
               </div>
               {errors.studentName && (
-                <p className="text-[11px] text-burgundy-deep mt-1">{errors.studentName}</p>
+                <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.studentName}</p>
               )}
             </div>
 
             {/* Student Department (STRICTLY ONLY TWO OPTIONS: Dars or Hifz) */}
             <div>
-              <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-2">
-                Student Department <span className="text-burgundy-deep">*</span>
-                <span className="font-malayalam block text-[11px] font-normal text-text-secondary lowercase">
-                  വിഭാഗം തിരഞ്ഞെടുക്കുക (Dars അല്ലെങ്കിൽ Hifz മാത്രം)
-                </span>
+              <label className="block text-xs font-malayalam font-bold text-text-primary mb-2">
+                വിദ്യാർത്ഥിയുടെ വിഭാഗം (Student Department - Dars / Hifz മാത്രം) <span className="text-burgundy-deep">*</span>
               </label>
 
               <div className="grid grid-cols-2 gap-4">
@@ -442,17 +422,14 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
               </div>
 
               {errors.studentDepartment && (
-                <p className="text-[11px] text-burgundy-deep mt-1">{errors.studentDepartment}</p>
+                <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.studentDepartment}</p>
               )}
             </div>
 
             {/* Address / Place */}
             <div>
-              <label className="block text-xs font-bold text-text-primary uppercase tracking-wider mb-1">
-                Address / Place <span className="text-burgundy-deep">*</span>
-                <span className="font-malayalam block text-[11px] font-normal text-text-secondary lowercase">
-                  സ്ഥലം / മേൽവിലാസം
-                </span>
+              <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
+                സ്ഥലം / മേൽവിലാസം (Place / Address) <span className="text-burgundy-deep">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gold-antique">
@@ -460,16 +437,16 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
                 </div>
                 <input
                   type="text"
-                  placeholder="e.g. Karinkallathani, Perinthalmanna"
+                  placeholder="ഉദാ: കരിങ്കല്ലത്താണി, പെരിന്തൽമണ്ണ"
                   value={formData.addressPlace}
                   onChange={(e) => setFormData({ ...formData, addressPlace: e.target.value })}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white transition-all ${
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-emerald-deep focus:bg-white transition-all ${
                     errors.addressPlace ? 'border-burgundy-deep' : 'border-gold-antique/40'
                   }`}
                 />
               </div>
               {errors.addressPlace && (
-                <p className="text-[11px] text-burgundy-deep mt-1">{errors.addressPlace}</p>
+                <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.addressPlace}</p>
               )}
             </div>
 
@@ -480,22 +457,22 @@ export default function StudentParentRegistration({ setActivePage, setSuccessDat
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-deep via-emerald-forest to-emerald-deep text-gold-champagne font-heading font-bold text-base uppercase tracking-wider shadow-emerald hover:brightness-110 active:scale-95 transition-all duration-300 border-2 border-gold-antique flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-deep via-emerald-forest to-emerald-deep text-gold-champagne font-malayalam font-bold text-base shadow-emerald hover:brightness-110 active:scale-95 transition-all duration-300 border-2 border-gold-antique flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin text-gold-champagne" />
-                  <span>Processing Registration...</span>
+                  <span>രജിസ്ട്രേഷൻ സമർപ്പിക്കുന്നു...</span>
                 </>
               ) : (
                 <>
                   <CheckCircle2 className="w-5 h-5 text-gold-antique" />
-                  <span>Submit Parent Registration</span>
+                  <span>രജിസ്ട്രേഷൻ സമർപ്പിക്കുക</span>
                 </>
               )}
             </button>
-            <p className="text-center text-xs text-text-secondary mt-2">
-              Your details will be registered directly in the official Thazkiya Academy database.
+            <p className="text-center text-xs font-malayalam text-text-secondary mt-2">
+              വിവരങ്ങൾ നേരിട്ട് താസ്കിയ അക്കാദമി ഡാറ്റാബേസിൽ രേഖപ്പെടുത്തുന്നതാണ്.
             </p>
           </div>
 
