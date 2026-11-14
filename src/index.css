@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-ivory text-text-primary antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+/* Islamic Arch & Card Styles */
+.islamic-arch {
+  border-top-left-radius: 999px;
+  border-top-right-radius: 999px;
+}
+
+.islamic-pattern-bg {
+  background-color: #123F32;
+  background-image: radial-gradient(rgba(198, 164, 91, 0.22) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.islamic-pattern-light {
+  background-color: #F7F3E9;
+  background-image: radial-gradient(rgba(18, 63, 50, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #DCC58E 0%, #C6A45B 50%, #B38E3F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border-gradient {
+  border-image: linear-gradient(to right, #DCC58E, #C6A45B, #DCC58E) 1;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F7F3E9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C6A45B;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #174B3B;
+}
+
+/* Print Styles */
+@media print {
+  nav, footer, .no-print, button, .admin-sidebar {
+    display: none !important;
+  }
+  
+  body, .print-container {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+}
