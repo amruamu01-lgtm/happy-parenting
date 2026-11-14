@@ -170,8 +170,8 @@ export default function AdminSettings() {
       <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-gold-antique/30 shadow-card space-y-4">
         <div className="flex items-center justify-between border-b border-gold-antique/20 pb-3">
           <div className="flex items-center space-x-2">
-            <Activity className="w-5 h-5 text-burgundy-deep" />
-            <h2 className="font-heading font-bold text-lg text-emerald-deep">
+            <Activity className="w-5 h-5 text-emerald" />
+            <h2 className="font-heading font-bold text-lg text-forest">
               Admin Activity Logs
             </h2>
           </div>
@@ -181,7 +181,7 @@ export default function AdminSettings() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-ivory/80 text-text-secondary uppercase text-[10px] font-bold border-b border-gold-antique/20">
+              <tr className="bg-sage/40 text-text-secondary uppercase text-[10px] font-bold border-b border-forest/10">
                 <th className="py-2.5 px-3">Log ID</th>
                 <th className="py-2.5 px-3">ഓപ്പറേറ്റർ</th>
                 <th className="py-2.5 px-3">നടപടി (Action)</th>
@@ -190,13 +190,13 @@ export default function AdminSettings() {
                 <th className="py-2.5 px-3">സമയം</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gold-antique/10 font-mono text-[11px]">
+            <tbody className="divide-y divide-forest/10 font-mono text-[11px]">
               {activityLogs.slice(0, 25).map((log) => (
-                <tr key={log.logId} className="hover:bg-ivory/40">
-                  <td className="py-2 px-3 text-gold-dark font-bold">{log.logId}</td>
-                  <td className="py-2 px-3 text-emerald-deep font-semibold">{log.adminId}</td>
+                <tr key={log.logId} className="hover:bg-sage/20">
+                  <td className="py-2 px-3 text-emerald font-bold">{log.logId}</td>
+                  <td className="py-2 px-3 text-forest font-semibold">{log.adminId}</td>
                   <td className="py-2 px-3 font-sans text-text-primary">{log.action}</td>
-                  <td className="py-2 px-3 text-burgundy-deep">{log.registrationId}</td>
+                  <td className="py-2 px-3 text-forest font-semibold">{log.registrationId}</td>
                   <td className="py-2 px-3 text-text-muted">{log.date}</td>
                   <td className="py-2 px-3 text-text-muted">{log.time}</td>
                 </tr>

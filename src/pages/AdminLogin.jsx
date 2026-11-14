@@ -72,8 +72,8 @@ export default function AdminLogin({ setActivePage, onLoginSuccess }) {
 
         {/* Error Alert */}
         {error && (
-          <div className="mx-6 mt-6 p-3.5 rounded-xl bg-burgundy-surface border border-burgundy-deep text-burgundy-deep text-xs font-medium flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+          <div className="mx-6 mt-6 p-3.5 rounded-xl bg-red-50 border border-red-300 text-red-700 text-xs font-medium flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
             <span>{error}</span>
           </div>
         )}

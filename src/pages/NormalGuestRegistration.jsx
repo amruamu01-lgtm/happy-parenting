@@ -121,19 +121,19 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
       {/* Back Navigation */}
       <button
         onClick={() => { setActivePage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-        className="inline-flex items-center space-x-2 text-xs font-malayalam font-semibold text-text-secondary hover:text-burgundy mb-6 transition-colors"
+        className="inline-flex items-center space-x-2 text-xs font-malayalam font-semibold text-text-secondary hover:text-forest mb-6 transition-colors"
       >
-        <ArrowLeft className="w-4 h-4 text-orange" />
+        <ArrowLeft className="w-4 h-4 text-emerald" />
         <span>ഹോമിലേക്ക് മടങ്ങുക</span>
       </button>
 
       {/* Main Card */}
-      <div className="bg-white rounded-3xl border-2 border-orange/30 shadow-card overflow-hidden">
+      <div className="bg-white rounded-3xl border-2 border-emerald/20 shadow-card overflow-hidden">
         
-        {/* Header Banner - Burgundy with Orange Accents */}
-        <div className="bg-burgundy text-white p-6 sm:p-8 text-center relative border-b-2 border-orange">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-burgundy-dark border border-orange/40 text-xs text-orange-light mb-3">
-            <UserCheck className="w-4 h-4 text-orange" />
+        {/* Header Banner - Deep Forest Green with Emerald Accents */}
+        <div className="bg-forest text-white p-6 sm:p-8 text-center relative border-b-2 border-emerald">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-xs text-white mb-3">
+            <UserCheck className="w-4 h-4 text-emerald-300" />
             <span className="font-malayalam">ബഹുമാന്യരായ അതിഥികൾക്കുള്ള രജിസ്ട്രേഷൻ</span>
           </div>
 
@@ -153,8 +153,8 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
 
         {/* Server Error Alert */}
         {serverError && (
-          <div className="mx-6 mt-6 p-4 rounded-xl bg-burgundy-surface border border-burgundy text-burgundy text-xs font-malayalam font-medium flex items-start space-x-2.5">
-            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+          <div className="mx-6 mt-6 p-4 rounded-xl bg-red-50 border border-red-300 text-red-700 text-xs font-malayalam font-medium flex items-start space-x-2.5">
+            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-600" />
             <div>
               <p className="font-bold">രജിസ്ട്രേഷൻ അറിയിപ്പ്</p>
               <p>{serverError}</p>
@@ -162,16 +162,16 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
           </div>
         )}
 
-        {/* Form Body: White & Soft Ivory with Burgundy focus borders */}
+        {/* Form Body: White & Soft Sage with Green focus borders */}
         <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-5">
           
           {/* Guest Name */}
           <div>
             <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-              അതിഥിയുടെ പൂർണ്ണ പേര് (Guest Full Name) <span className="text-burgundy">*</span>
+              അതിഥിയുടെ പൂർണ്ണ പേര് (Guest Full Name) <span className="text-red-600">*</span>
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
                 <User className="w-4 h-4" />
               </div>
               <input
@@ -179,13 +179,13 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                 placeholder="അതിഥിയുടെ പേര് നൽകുക"
                 value={formData.guestName}
                 onChange={(e) => setFormData({ ...formData, guestName: e.target.value })}
-                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/50 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white transition-all ${
-                  errors.guestName ? 'border-burgundy' : 'border-burgundy/20'
+                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-sage/20 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-emerald focus:border-emerald focus:bg-white transition-all ${
+                  errors.guestName ? 'border-red-500' : 'border-forest/20'
                 }`}
               />
             </div>
             {errors.guestName && (
-              <p className="text-[11px] font-malayalam text-burgundy mt-1">{errors.guestName}</p>
+              <p className="text-[11px] font-malayalam text-red-600 mt-1">{errors.guestName}</p>
             )}
           </div>
 
@@ -194,10 +194,10 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
             {/* Mobile */}
             <div>
               <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                മൊബൈൽ നമ്പർ (Mobile Number) <span className="text-burgundy">*</span>
+                മൊബൈൽ നമ്പർ (Mobile Number) <span className="text-red-600">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
                   <Phone className="w-4 h-4" />
                 </div>
                 <input
@@ -206,23 +206,23 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                   maxLength={10}
                   value={formData.mobileNumber}
                   onChange={handleMobileChange}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/50 text-text-primary placeholder:text-text-muted text-sm font-mono focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white transition-all ${
-                    errors.mobileNumber ? 'border-burgundy' : 'border-burgundy/20'
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-sage/20 text-text-primary placeholder:text-text-muted text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald focus:border-emerald focus:bg-white transition-all ${
+                    errors.mobileNumber ? 'border-red-500' : 'border-forest/20'
                   }`}
                 />
               </div>
               {errors.mobileNumber && (
-                <p className="text-[11px] font-malayalam text-burgundy mt-1">{errors.mobileNumber}</p>
+                <p className="text-[11px] font-malayalam text-red-600 mt-1">{errors.mobileNumber}</p>
               )}
             </div>
 
             {/* WhatsApp */}
             <div>
               <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                വാട്സ്ആപ്പ് നമ്പർ (WhatsApp Number) <span className="text-burgundy">*</span>
+                വാട്സ്ആപ്പ് നമ്പർ (WhatsApp Number) <span className="text-red-600">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
                   <MessageSquare className="w-4 h-4" />
                 </div>
                 <input
@@ -233,8 +233,8 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                   value={formData.sameAsMobile ? formData.mobileNumber : formData.whatsappNumber}
                   onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                   className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-mono transition-all ${
-                    formData.sameAsMobile ? 'bg-gray-100 text-text-muted cursor-not-allowed' : 'bg-ivory/50 text-text-primary focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white'
-                  } ${errors.whatsappNumber ? 'border-burgundy' : 'border-burgundy/20'}`}
+                    formData.sameAsMobile ? 'bg-gray-100 text-text-muted cursor-not-allowed' : 'bg-sage/20 text-text-primary focus:outline-none focus:ring-2 focus:ring-emerald focus:border-emerald focus:bg-white'
+                  } ${errors.whatsappNumber ? 'border-red-500' : 'border-forest/20'}`}
                 />
               </div>
               <div className="mt-1.5 flex items-center space-x-2">
@@ -243,14 +243,14 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                   id="guestSameAsMobile"
                   checked={formData.sameAsMobile}
                   onChange={handleCheckboxChange}
-                  className="w-4 h-4 text-burgundy rounded border-burgundy/30 focus:ring-burgundy"
+                  className="w-4 h-4 text-emerald rounded border-forest/30 focus:ring-emerald accent-emerald"
                 />
                 <label htmlFor="guestSameAsMobile" className="text-xs font-malayalam text-text-secondary cursor-pointer select-none">
                   മൊബൈൽ നമ്പർ തന്നെ (Same as Mobile)
                 </label>
               </div>
               {errors.whatsappNumber && (
-                <p className="text-[11px] font-malayalam text-burgundy mt-1">{errors.whatsappNumber}</p>
+                <p className="text-[11px] font-malayalam text-red-600 mt-1">{errors.whatsappNumber}</p>
               )}
             </div>
           </div>
@@ -258,39 +258,39 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
           {/* Number of Guests Attending Counter */}
           <div>
             <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-              കൂടെ പങ്കെടുക്കുന്ന ആകെ അതിഥികളുടെ എണ്ണം <span className="text-burgundy">*</span>
+              കൂടെ പങ്കെടുക്കുന്ന ആകെ അതിഥികളുടെ എണ്ണം <span className="text-red-600">*</span>
             </label>
-            <div className="flex items-center space-x-3 bg-ivory/60 border border-burgundy/20 rounded-xl p-1.5 max-w-xs">
+            <div className="flex items-center space-x-3 bg-sage/30 border border-forest/20 rounded-xl p-1.5 max-w-xs">
               <button
                 type="button"
                 onClick={() => setFormData(prev => ({ ...prev, guestsCount: Math.max(1, prev.guestsCount - 1) }))}
-                className="w-10 h-10 rounded-lg bg-white border border-burgundy/20 flex items-center justify-center text-text-primary hover:bg-orange hover:text-white transition-colors"
+                className="w-10 h-10 rounded-lg bg-white border border-forest/20 flex items-center justify-center text-text-primary hover:bg-emerald hover:text-white transition-colors"
               >
                 <Minus className="w-4 h-4" />
               </button>
-              <span className="flex-1 text-center font-heading font-bold text-lg text-burgundy font-mono">
+              <span className="flex-1 text-center font-heading font-bold text-lg text-forest font-mono">
                 {formData.guestsCount}
               </span>
               <button
                 type="button"
                 onClick={() => setFormData(prev => ({ ...prev, guestsCount: prev.guestsCount + 1 }))}
-                className="w-10 h-10 rounded-lg bg-white border border-burgundy/20 flex items-center justify-center text-text-primary hover:bg-orange hover:text-white transition-colors"
+                className="w-10 h-10 rounded-lg bg-white border border-forest/20 flex items-center justify-center text-text-primary hover:bg-emerald hover:text-white transition-colors"
               >
                 <Plus className="w-4 h-4" />
               </button>
             </div>
             {errors.guestsCount && (
-              <p className="text-[11px] font-malayalam text-burgundy mt-1">{errors.guestsCount}</p>
+              <p className="text-[11px] font-malayalam text-red-600 mt-1">{errors.guestsCount}</p>
             )}
           </div>
 
           {/* Address / Place */}
           <div>
             <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-              സ്ഥലം / മേൽവിലാസം (Place / Address) <span className="text-burgundy">*</span>
+              സ്ഥലം / മേൽവിലാസം (Place / Address) <span className="text-red-600">*</span>
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-orange">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald">
                 <MapPin className="w-4 h-4" />
               </div>
               <input
@@ -298,31 +298,31 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                 placeholder="ഉദാ: കരിങ്കല്ലത്താണി, മേലാറ്റൂർ"
                 value={formData.addressPlace}
                 onChange={(e) => setFormData({ ...formData, addressPlace: e.target.value })}
-                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/50 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-burgundy focus:border-burgundy focus:bg-white transition-all ${
-                  errors.addressPlace ? 'border-burgundy' : 'border-burgundy/20'
+                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-sage/20 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-emerald focus:border-emerald focus:bg-white transition-all ${
+                  errors.addressPlace ? 'border-red-500' : 'border-forest/20'
                 }`}
               />
             </div>
             {errors.addressPlace && (
-              <p className="text-[11px] font-malayalam text-burgundy mt-1">{errors.addressPlace}</p>
+              <p className="text-[11px] font-malayalam text-red-600 mt-1">{errors.addressPlace}</p>
             )}
           </div>
 
-          {/* Primary Submit Button: Burgundy background with white text */}
+          {/* Primary Submit Button: Deep Forest Green background with white text */}
           <div className="pt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 px-6 rounded-2xl bg-burgundy hover:bg-burgundy-dark text-white font-malayalam font-bold text-base shadow-burgundy hover:shadow-lg active:scale-95 transition-all duration-300 border border-burgundy flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full py-4 px-6 rounded-2xl bg-forest hover:bg-emerald text-white font-malayalam font-bold text-base shadow-md hover:shadow-lg active:scale-95 transition-all duration-300 border border-forest flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin text-orange-light" />
+                  <Loader2 className="w-5 h-5 animate-spin text-white" />
                   <span>രജിസ്ട്രേഷൻ സമർപ്പിക്കുന്നു...</span>
                 </>
               ) : (
                 <>
-                  <CheckCircle2 className="w-5 h-5 text-orange-light" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-300" />
                   <span>രജിസ്ട്രേഷൻ സമർപ്പിക്കുക</span>
                 </>
               )}

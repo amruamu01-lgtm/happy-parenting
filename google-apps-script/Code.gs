@@ -154,7 +154,18 @@ function handleRequest(e, method) {
       }
     }
 
-    const action = params.action || body.action || 'ping';
+    let paramData = {};
+    if (params.data) {
+      try {
+        paramData = JSON.parse(params.data);
+      } catch (err) {}
+    } else if (params.registration) {
+      try {
+        paramData = typeof params.registration === 'string' ? JSON.parse(params.registration) : params.registration;
+      } catch (err) {}
+    }
+
+    const action = params.action || body.action || paramData.action || 'ping';
 
     let response = { success: false, message: 'Unknown action: ' + action };
 
@@ -172,7 +183,7 @@ function handleRequest(e, method) {
         break;
 
       case 'createRegistration':
-        response = handleCreateRegistration(body.registration || body);
+        response = handleCreateRegistration(body.registration || body || paramData.registration || paramData || params);
         break;
 
       case 'getRegistrations':

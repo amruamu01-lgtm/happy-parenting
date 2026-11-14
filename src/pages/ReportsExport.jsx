@@ -100,8 +100,8 @@ export default function ReportsExport() {
       format: 'a4'
     });
 
-    // Header styling - Burgundy with Warm Orange & Soft Ivory
-    doc.setFillColor(149, 47, 47); // Primary Burgundy (#952F2F)
+    // Header styling - Deep Forest Green with Soft Sage & Emerald Green
+    doc.setFillColor(22, 75, 60); // Deep Forest Green (#164B3C)
     doc.rect(0, 0, 842, 75, 'F');
 
     doc.setTextColor(255, 255, 255); // White
@@ -109,12 +109,12 @@ export default function ReportsExport() {
     doc.setFont('helvetica', 'bold');
     doc.text('HAPPY PARENTING — OFFICIAL REGISTRATION REPORT', 421, 28, { align: 'center' });
 
-    doc.setTextColor(248, 245, 242); // Soft Ivory (#F8F5F2)
+    doc.setTextColor(234, 243, 238); // Soft Sage (#EAF3EE)
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     doc.text('THAZKIYA ACADEMY, KARINKALLATHANI', 421, 46, { align: 'center' });
     doc.setFontSize(9);
-    doc.setTextColor(217, 136, 63); // Warm Orange (#D9883F)
+    doc.setTextColor(46, 125, 91); // Emerald Green (#2E7D5B)
     doc.text('22 NOVEMBER • SUNDAY | 10:00 AM – 2:00 PM', 421, 62, { align: 'center' });
 
     // Table Columns & Rows
@@ -150,7 +150,7 @@ export default function ReportsExport() {
       startY: 85,
       theme: 'grid',
       headStyles: {
-        fillColor: [149, 47, 47], // Burgundy (#952F2F)
+        fillColor: [22, 75, 60], // Deep Forest Green (#164B3C)
         textColor: [255, 255, 255], // White
         fontStyle: 'bold',
         fontSize: 9
@@ -161,7 +161,7 @@ export default function ReportsExport() {
         overflow: 'linebreak'
       },
       alternateRowStyles: {
-        fillColor: [248, 245, 242] // Soft Ivory (#F8F5F2)
+        fillColor: [247, 250, 248] // Light Background (#F7FAF8)
       },
       margin: { top: 85, left: 20, right: 20, bottom: 20 }
     });
@@ -205,9 +205,9 @@ export default function ReportsExport() {
 
           <button
             onClick={handleExportPDF}
-            className="px-4 py-2.5 rounded-xl bg-burgundy-deep text-white font-bold text-xs flex items-center space-x-2 hover:bg-burgundy-dark shadow-md border border-gold-antique/40 transition-all"
+            className="px-4 py-2.5 rounded-xl bg-forest hover:bg-forest/90 text-white font-bold text-xs flex items-center space-x-2 shadow-md border border-forest/30 transition-all"
           >
-            <File className="w-4 h-4 text-gold-champagne" />
+            <File className="w-4 h-4 text-emerald-300" />
             <span>PDF ഡൗൺലോഡ്</span>
           </button>
 
@@ -259,7 +259,7 @@ export default function ReportsExport() {
 
           <div className="p-3.5 rounded-2xl bg-ivory/60 border border-gold-antique/20">
             <span className="text-text-muted block">ആകെ അതിഥികൾ</span>
-            <span className="font-heading font-black text-2xl text-burgundy-deep font-mono">
+            <span className="font-heading font-black text-2xl text-forest font-mono">
               {stats?.totalGuests ?? 0}
             </span>
           </div>

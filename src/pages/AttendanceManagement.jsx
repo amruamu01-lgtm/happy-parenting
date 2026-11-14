@@ -134,17 +134,17 @@ export default function AttendanceManagement({ adminUser }) {
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-burgundy-surface border border-burgundy-deep/30 flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-between">
             <div>
-              <span className="text-[11px] font-bold text-burgundy-deep block">
+              <span className="text-[11px] font-bold text-gray-700 block">
                 ഹാജരില്ലാത്തവർ (Absent)
               </span>
-              <span className="font-heading font-black text-3xl text-burgundy-deep font-mono">
+              <span className="font-heading font-black text-3xl text-gray-800 font-mono">
                 {absentCount}
               </span>
-              <span className="text-[10px] text-burgundy-deep/70 block mt-0.5">എത്തിച്ചേരാനുള്ളവർ</span>
+              <span className="text-[10px] text-gray-500 block mt-0.5">എത്തിച്ചേരാനുള്ളവർ</span>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-white border border-burgundy-deep/30 flex items-center justify-center text-burgundy-deep">
+            <div className="w-12 h-12 rounded-xl bg-white border border-gray-300 flex items-center justify-center text-gray-500">
               <XCircle className="w-6 h-6" />
             </div>
           </div>

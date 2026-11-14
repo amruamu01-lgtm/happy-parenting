@@ -1,7 +1,8 @@
 /**
  * API Service for Happy Parenting Web Application
- * Handles communication with Google Apps Script Web App API
- * and keeps temporary UI state in React memory (NO localStorage/sessionStorage for registration data).
+ * Handles communication with Google Apps Script Web App API.
+ * NO dummy or sample records. Clean state on startup.
+ * NO localStorage / sessionStorage for registration data.
  */
 
 const STORAGE_KEYS = {
@@ -22,105 +23,9 @@ if (typeof window !== 'undefined') {
   }
 }
 
-// In-Memory Registration Data (Temporary UI State only)
-let inMemoryRegistrations = [
-  {
-    registrationId: 'HP-SP-1001',
-    registrationType: 'Student Parent',
-    name: 'മുഹമ്മദ് ബഷീർ കെ.',
-    mobileNumber: '9847123456',
-    whatsappNumber: '9847123456',
-    studentName: 'അഹമ്മദ് ഫായിസ്',
-    studentDepartment: 'Dars',
-    relationship: 'പിതാവ്',
-    parentsAttending: 2,
-    guestsCount: 0,
-    addressPlace: 'കരിങ്കല്ലത്താണി, പെരിന്തൽമണ്ണ',
-    attendanceStatus: 'Present',
-    createdDate: '14/11/2026',
-    createdTime: '10:15 AM',
-    updatedDate: '14/11/2026'
-  },
-  {
-    registrationId: 'HP-SP-1002',
-    registrationType: 'Student Parent',
-    name: 'ഫാത്തിമ സുഹറ',
-    mobileNumber: '9745987654',
-    whatsappNumber: '9745987654',
-    studentName: 'ഹാഫിള് ബിലാൽ',
-    studentDepartment: 'Hifz',
-    relationship: 'മാതാവ്',
-    parentsAttending: 1,
-    guestsCount: 0,
-    addressPlace: 'താഴെക്കോട്',
-    attendanceStatus: 'Present',
-    createdDate: '14/11/2026',
-    createdTime: '11:30 AM',
-    updatedDate: '14/11/2026'
-  },
-  {
-    registrationId: 'HP-SP-1003',
-    registrationType: 'Student Parent',
-    name: 'അബ്ദുൽ റഷീദ് ഇ.',
-    mobileNumber: '9447332211',
-    whatsappNumber: '9447332211',
-    studentName: 'ഉമർ ഫാറൂഖ്',
-    studentDepartment: 'Dars',
-    relationship: 'പിതാവ്',
-    parentsAttending: 2,
-    guestsCount: 0,
-    addressPlace: 'മണ്ണാർക്കാട്',
-    attendanceStatus: 'Absent',
-    createdDate: '14/11/2026',
-    createdTime: '12:05 PM',
-    updatedDate: '14/11/2026'
-  },
-  {
-    registrationId: 'HP-NG-2001',
-    registrationType: 'Normal Guest',
-    name: 'ഡോ. ഉസ്മാൻ മാസ്റ്റർ',
-    mobileNumber: '9895001122',
-    whatsappNumber: '9895001122',
-    studentName: '',
-    studentDepartment: '',
-    relationship: '',
-    parentsAttending: 0,
-    guestsCount: 2,
-    addressPlace: 'മേലാറ്റൂർ, മലപ്പുറം',
-    attendanceStatus: 'Present',
-    createdDate: '14/11/2026',
-    createdTime: '01:20 PM',
-    updatedDate: '14/11/2026'
-  },
-  {
-    registrationId: 'HP-NG-2002',
-    registrationType: 'Normal Guest',
-    name: 'സയ്യിദ് മുനവ്വറലി',
-    mobileNumber: '9633445566',
-    whatsappNumber: '9633445566',
-    studentName: '',
-    studentDepartment: '',
-    relationship: '',
-    parentsAttending: 0,
-    guestsCount: 1,
-    addressPlace: 'അലനല്ലൂർ',
-    attendanceStatus: 'Absent',
-    createdDate: '14/11/2026',
-    createdTime: '02:45 PM',
-    updatedDate: '14/11/2026'
-  }
-];
-
-let inMemoryLogs = [
-  {
-    logId: 'LOG-1001',
-    adminId: 'SYSTEM',
-    action: 'ഡാറ്റാബേസ് സജ്ജീകരിച്ചു',
-    registrationId: 'ALL',
-    date: '14/11/2026',
-    time: '10:00 AM'
-  }
-];
+// In-Memory Registration Data (Clean, starts empty - NO dummy or fake records)
+let inMemoryRegistrations = [];
+let inMemoryLogs = [];
 
 // Helper to broadcast changes across open tabs/windows
 const broadcastChannel = typeof window !== 'undefined' && window.BroadcastChannel 
@@ -137,7 +42,11 @@ export const apiService = {
   // Get active Google Apps Script Web App URL
   getGasUrl() {
     try {
-      return localStorage.getItem(STORAGE_KEYS.API_URL) || import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL || '';
+      const stored = localStorage.getItem(STORAGE_KEYS.API_URL);
+      if (stored && stored.trim()) return stored.trim();
+      const envUrl = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL;
+      if (envUrl && envUrl.trim()) return envUrl.trim();
+      return '';
     } catch (e) {
       return '';
     }
@@ -145,7 +54,12 @@ export const apiService = {
 
   setGasUrl(url) {
     try {
-      localStorage.setItem(STORAGE_KEYS.API_URL, (url || '').trim());
+      const clean = (url || '').trim();
+      if (clean) {
+        localStorage.setItem(STORAGE_KEYS.API_URL, clean);
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.API_URL);
+      }
       notifyDataChanged();
     } catch (e) {
       console.error(e);
@@ -156,101 +70,95 @@ export const apiService = {
   async testConnection(url) {
     const targetUrl = (url || this.getGasUrl()).trim();
     if (!targetUrl) {
-      return { success: false, message: 'ഗൂഗിൾ ആപ്സ് സ്ക്രിപ്റ്റ് URL നൽകിയിട്ടില്ല' };
-    }
-    try {
-      const response = await fetch(`${targetUrl}?action=ping`, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      });
-      const data = await response.json();
-      return { success: data.success || data.status === 'online', data, message: 'കണക്ഷൻ വിജയകരമാണ്!' };
-    } catch (err) {
-      return { success: false, error: err.message, message: 'കണക്റ്റ് ചെയ്യാനായില്ല. അനുമതികൾ പരിശോധിക്കുക.' };
-    }
-  },
-
-  // Public: Create Registration
-  async createRegistration(formData) {
-    const gasUrl = this.getGasUrl();
-
-    // If Google Apps Script is configured, call it directly
-    if (gasUrl) {
-      try {
-        const response = await fetch(gasUrl, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'createRegistration',
-            registration: formData
-          })
-        });
-        const res = await response.json();
-        if (res && res.success) {
-          inMemoryRegistrations.unshift(res.registration);
-          notifyDataChanged();
-          return res;
-        } else if (res && res.isDuplicate) {
-          return res;
-        }
-      } catch (err) {
-        console.warn('Google Apps Script request failed, using in-memory state:', err);
-      }
-    }
-
-    // In-memory Handler
-    const type = formData.registrationType || formData.type;
-    const mobile = (formData.mobileNumber || '').trim();
-
-    // Duplicate Check
-    const exists = inMemoryRegistrations.find(r => r.mobileNumber === mobile && r.registrationType === type);
-    if (exists) {
-      return {
-        success: false,
-        isDuplicate: true,
-        message: `ഈ മൊബൈൽ നമ്പറിൽ ഇതിനകം രജിസ്ട്രേഷൻ നിലവിലുണ്ട്. (രജിസ്ട്രേഷൻ ഐഡി: ${exists.registrationId})`
+      return { 
+        success: false, 
+        message: 'ഗൂഗിൾ ആപ്സ് സ്ക്രിപ്റ്റ് Web App URL നൽകിയിട്ടില്ല' 
       };
     }
 
-    // Generate unique ID
-    const prefix = type === 'Student Parent' ? 'HP-SP' : 'HP-NG';
-    const startNum = type === 'Student Parent' ? 1000 : 2000;
-    const existingNums = inMemoryRegistrations
-      .filter(r => r.registrationId && r.registrationId.startsWith(prefix))
-      .map(r => {
-        const parts = r.registrationId.split('-');
-        return parseInt(parts[2], 10) || startNum;
+    try {
+      const separator = targetUrl.includes('?') ? '&' : '?';
+      const response = await fetch(`${targetUrl}${separator}action=ping`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        redirect: 'follow'
       });
-    const nextNum = existingNums.length > 0 ? Math.max(...existingNums) + 1 : startNum + 1;
-    const newId = `${prefix}-${nextNum}`;
 
-    const now = new Date();
-    const newRecord = {
-      registrationId: newId,
-      registrationType: type,
-      name: formData.name.trim(),
-      mobileNumber: mobile,
-      whatsappNumber: (formData.whatsappNumber || mobile).trim(),
-      studentName: type === 'Student Parent' ? (formData.studentName || '').trim() : '',
-      studentDepartment: type === 'Student Parent' ? (formData.studentDepartment || '').trim() : '',
-      relationship: type === 'Student Parent' ? (formData.relationship || '').trim() : '',
-      parentsAttending: type === 'Student Parent' ? (parseInt(formData.parentsAttending, 10) || 1) : 0,
-      guestsCount: type === 'Normal Guest' ? (parseInt(formData.guestsCount, 10) || 1) : 0,
-      addressPlace: (formData.addressPlace || '').trim(),
-      attendanceStatus: 'Absent',
-      createdDate: now.toLocaleDateString(),
-      createdTime: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      updatedDate: now.toLocaleDateString()
-    };
+      if (!response.ok) {
+        return { 
+          success: false, 
+          message: `സെർവർ പ്രതികരണം പരാജയപ്പെട്ടു (Status: ${response.status})` 
+        };
+      }
 
-    inMemoryRegistrations.unshift(newRecord);
-    this.logActivity('PUBLIC', 'പുതിയ രജിസ്ട്രേഷൻ സൃഷ്ടിച്ചു', newId);
-    notifyDataChanged();
+      const data = await response.json();
+      return { 
+        success: data.success || data.status === 'online', 
+        data, 
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് കണക്ഷൻ വിജയകരമാണ്!' 
+      };
+    } catch (err) {
+      return { 
+        success: false, 
+        error: err.message, 
+        message: 'കണക്റ്റ് ചെയ്യാനായില്ല. ഗൂഗിൾ ഷീറ്റ് അനുമതികളും വെബ് ആപ്പ് വിന്യാസവും പരിശോധിക്കുക.' 
+      };
+    }
+  },
 
-    return {
-      success: true,
-      registrationId: newId,
-      registration: newRecord
-    };
+  // Public: Create Registration (Saves directly to Google Sheets database)
+  async createRegistration(formData) {
+    const gasUrl = this.getGasUrl();
+
+    // If Google Apps Script URL is not configured, inform with a clear Malayalam message
+    if (!gasUrl) {
+      return {
+        success: false,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസ് കണക്ഷൻ സജ്ജീകരിച്ചിട്ടില്ല. അഡ്മിൻ പാനലിൽ Google Apps Script Web App URL നൽകുക.'
+      };
+    }
+
+    try {
+      // Use text/plain to avoid CORS preflight issues with Google Apps Script
+      const response = await fetch(gasUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify({
+          action: 'createRegistration',
+          registration: formData
+        }),
+        redirect: 'follow'
+      });
+
+      if (!response.ok) {
+        throw new Error(`സെർവർ പ്രതികരണം ലഭ്യമല്ല (${response.status})`);
+      }
+
+      const res = await response.json();
+
+      if (res && res.success) {
+        if (res.registration) {
+          inMemoryRegistrations.unshift(res.registration);
+        }
+        notifyDataChanged();
+        return res;
+      } else if (res && res.isDuplicate) {
+        return res;
+      } else {
+        return {
+          success: false,
+          message: res.message || 'രജിസ്ട്രേഷൻ ഗൂഗിൾ ഷീറ്റ്സിൽ സേവ് ചെയ്യാൻ സാധിച്ചില്ല.'
+        };
+      }
+    } catch (err) {
+      console.error('Registration saving to Google Sheets failed:', err);
+      return {
+        success: false,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസിലേക്ക് കണക്റ്റ് ചെയ്യാനായില്ല. ഇന്റർനെറ്റ് കണക്ഷനും അനുമതികളും പരിശോധിക്കുക.'
+      };
+    }
   },
 
   // Admin: Get all registrations
@@ -263,18 +171,27 @@ export const apiService = {
           action: 'getRegistrations',
           ...params
         }).toString();
-        const response = await fetch(`${gasUrl}?${queryParams}`, { method: 'GET' });
-        const res = await response.json();
-        if (res && res.success && Array.isArray(res.data)) {
-          inMemoryRegistrations = res.data;
-          return res;
+
+        const separator = gasUrl.includes('?') ? '&' : '?';
+        const response = await fetch(`${gasUrl}${separator}${queryParams}`, { 
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          redirect: 'follow'
+        });
+
+        if (response.ok) {
+          const res = await response.json();
+          if (res && res.success && Array.isArray(res.data)) {
+            inMemoryRegistrations = res.data;
+            return res;
+          }
         }
       } catch (err) {
-        console.warn('Failed to fetch from Google Apps Script, using memory:', err);
+        console.warn('Failed to fetch from Google Apps Script:', err);
       }
     }
 
-    // In-memory filtering
+    // Return current memory state with filtering
     let list = [...inMemoryRegistrations];
     const search = (params.search || '').toLowerCase().trim();
     const typeFilter = params.type || '';
@@ -309,16 +226,29 @@ export const apiService = {
 
     if (gasUrl) {
       try {
-        await fetch(gasUrl, {
+        const response = await fetch(gasUrl, {
           method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
             action: 'updateRegistration',
             registration: registrationData,
             adminId
-          })
+          }),
+          redirect: 'follow'
         });
+        if (response.ok) {
+          const res = await response.json();
+          if (res && res.success) {
+            const index = inMemoryRegistrations.findIndex(r => r.registrationId === registrationData.registrationId);
+            if (index !== -1) {
+              inMemoryRegistrations[index] = { ...inMemoryRegistrations[index], ...registrationData };
+            }
+            notifyDataChanged();
+            return res;
+          }
+        }
       } catch (e) {
-        console.warn('Update via GAS failed, updating in-memory:', e);
+        console.warn('Update via GAS failed:', e);
       }
     }
 
@@ -337,7 +267,7 @@ export const apiService = {
     return { success: false, message: 'രജിസ്ട്രേഷൻ കണ്ടെത്താനായില്ല' };
   },
 
-  // Admin: Delete registration (Requirement 3: Delete actual record from Google Sheets & in-memory)
+  // Admin: Delete registration (Deletes record from Google Sheets)
   async deleteRegistration(id, adminId = 'ADMIN') {
     const gasUrl = this.getGasUrl();
     let backendSuccess = false;
@@ -346,11 +276,15 @@ export const apiService = {
       try {
         const response = await fetch(gasUrl, {
           method: 'POST',
-          body: JSON.stringify({ action: 'deleteRegistration', id, adminId })
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'deleteRegistration', id, adminId }),
+          redirect: 'follow'
         });
-        const res = await response.json();
-        if (res && res.success) {
-          backendSuccess = true;
+        if (response.ok) {
+          const res = await response.json();
+          if (res && res.success) {
+            backendSuccess = true;
+          }
         }
       } catch (e) {
         console.warn('GAS delete request error:', e);
@@ -376,7 +310,9 @@ export const apiService = {
       try {
         await fetch(gasUrl, {
           method: 'POST',
-          body: JSON.stringify({ action: 'updateAttendance', id, status, adminId })
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'updateAttendance', id, status, adminId }),
+          redirect: 'follow'
         });
       } catch (e) {
         console.warn('GAS attendance update failed:', e);
@@ -400,10 +336,17 @@ export const apiService = {
 
     if (gasUrl) {
       try {
-        const response = await fetch(`${gasUrl}?action=getDashboardStats`);
-        const res = await response.json();
-        if (res && res.success && res.stats) {
-          return res;
+        const separator = gasUrl.includes('?') ? '&' : '?';
+        const response = await fetch(`${gasUrl}${separator}action=getDashboardStats`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          redirect: 'follow'
+        });
+        if (response.ok) {
+          const res = await response.json();
+          if (res && res.success && res.stats) {
+            return res;
+          }
         }
       } catch (e) {
         // fallback to memory
@@ -470,20 +413,24 @@ export const apiService = {
       try {
         const response = await fetch(gasUrl, {
           method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
             action: 'adminLogin',
             username,
             password
-          })
+          }),
+          redirect: 'follow'
         });
-        const res = await response.json();
-        if (res && res.success) {
-          const session = {
-            ...res.admin,
-            expiresAt: Date.now() + 8 * 60 * 60 * 1000
-          };
-          localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(session));
-          return res;
+        if (response.ok) {
+          const res = await response.json();
+          if (res && res.success) {
+            const session = {
+              ...res.admin,
+              expiresAt: Date.now() + 8 * 60 * 60 * 1000
+            };
+            localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(session));
+            return res;
+          }
         }
       } catch (e) {
         console.warn('GAS login failed:', e);
@@ -547,6 +494,24 @@ export const apiService = {
   },
 
   async getActivityLogs() {
+    const gasUrl = this.getGasUrl();
+    if (gasUrl) {
+      try {
+        const separator = gasUrl.includes('?') ? '&' : '?';
+        const response = await fetch(`${gasUrl}${separator}action=getActivityLogs`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          redirect: 'follow'
+        });
+        if (response.ok) {
+          const res = await response.json();
+          if (res && res.success && Array.isArray(res.logs)) {
+            return res;
+          }
+        }
+      } catch (e) {}
+    }
+
     return {
       success: true,
       logs: inMemoryLogs

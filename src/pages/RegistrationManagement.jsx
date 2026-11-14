@@ -410,7 +410,7 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
                           <button
                             onClick={() => setDeleteConfirmItem(item)}
                             title="നീക്കം ചെയ്യുക"
-                            className="p-1.5 rounded-lg text-burgundy-deep hover:bg-burgundy-surface hover:scale-105 transition-all"
+                            className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 hover:scale-105 transition-all"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -488,7 +488,7 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
                   {/* Requirement 3: Delete Button on Mobile Card */}
                   <button
                     onClick={() => setDeleteConfirmItem(item)}
-                    className="px-3 py-1.5 rounded-lg bg-burgundy-surface text-burgundy-deep font-semibold text-xs border border-burgundy-deep/20 flex items-center space-x-1 hover:bg-burgundy-deep hover:text-white transition-all"
+                    className="px-3 py-1.5 rounded-lg bg-red-50 text-red-700 font-semibold text-xs border border-red-200 flex items-center space-x-1 hover:bg-red-600 hover:text-white transition-all"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>നീക്കം ചെയ്യുക</span>
@@ -622,7 +622,7 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
             </div>
 
             {modalError && (
-              <div className="mx-6 mt-4 p-2.5 rounded-lg bg-burgundy-surface text-burgundy-deep text-xs">
+              <div className="mx-6 mt-4 p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs">
                 {modalError}
               </div>
             )}
@@ -788,7 +788,7 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
             </div>
 
             {modalError && (
-              <div className="mx-6 mt-4 p-2.5 rounded-lg bg-burgundy-surface text-burgundy-deep text-xs">
+              <div className="mx-6 mt-4 p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs">
                 {modalError}
               </div>
             )}
@@ -945,22 +945,22 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
           ======================================================== */}
       {deleteConfirmItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-malayalam">
-          <div className="bg-white rounded-3xl border-2 border-burgundy-deep/40 shadow-2xl max-w-sm w-full p-6 text-center space-y-4 animate-fadeIn">
-            <div className="w-14 h-14 rounded-full bg-burgundy-surface border-2 border-burgundy-deep text-burgundy-deep flex items-center justify-center mx-auto shadow-md">
+          <div className="bg-white rounded-3xl border-2 border-red-200 shadow-2xl max-w-sm w-full p-6 text-center space-y-4 animate-fadeIn">
+            <div className="w-14 h-14 rounded-full bg-red-50 border-2 border-red-300 text-red-600 flex items-center justify-center mx-auto shadow-md">
               <Trash2 className="w-7 h-7" />
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-heading font-bold text-lg text-emerald-deep">
+              <h3 className="font-heading font-bold text-lg text-forest">
                 Delete Registration
               </h3>
               
               {/* Exact Requirement 3 Confirmation Text: "ഈ രജിസ്ട്രേഷൻ സ്ഥിരമായി നീക്കം ചെയ്യണോ?" */}
-              <p className="font-malayalam font-bold text-base text-burgundy-deep">
+              <p className="font-malayalam font-bold text-base text-red-700">
                 ഈ രജിസ്ട്രേഷൻ സ്ഥിരമായി നീക്കം ചെയ്യണോ?
               </p>
 
-              <div className="p-3 bg-ivory/80 rounded-xl border border-gold-antique/30 text-xs text-text-primary text-left font-mono">
+              <div className="p-3 bg-sage/20 rounded-xl border border-forest/15 text-xs text-text-primary text-left font-mono">
                 <p><strong>ID:</strong> {deleteConfirmItem.registrationId}</p>
                 <p className="font-sans font-semibold"><strong>പേര്:</strong> {deleteConfirmItem.name}</p>
                 <p><strong>മൊബൈൽ:</strong> {deleteConfirmItem.mobileNumber}</p>
@@ -968,7 +968,7 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
             </div>
 
             {/* Exact Requirement 3 Buttons: "റദ്ദാക്കുക" and "നീക്കം ചെയ്യുക" */}
-            <div className="flex items-center justify-center space-x-3 pt-3 border-t border-gold-antique/20">
+            <div className="flex items-center justify-center space-x-3 pt-3 border-t border-forest/15">
               <button
                 type="button"
                 onClick={() => setDeleteConfirmItem(null)}
@@ -982,7 +982,7 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
                 type="button"
                 onClick={handleDeleteConfirm}
                 disabled={isDeleting}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-burgundy-deep hover:bg-burgundy-dark text-white text-xs font-malayalam font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-1.5"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-malayalam font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-1.5"
               >
                 {isDeleting ? (
                   <>

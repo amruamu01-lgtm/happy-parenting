@@ -200,25 +200,25 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration, ad
         </div>
 
         {/* STAT 4: Total Guests */}
-        <div className="bg-white rounded-2xl p-6 border-2 border-burgundy-deep/30 shadow-card hover:border-burgundy-deep transition-all relative overflow-hidden group">
+        <div className="bg-white rounded-2xl p-6 border-2 border-forest/20 shadow-card hover:border-emerald transition-all relative overflow-hidden group">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-text-secondary">
               ആകെ അതിഥികളുടെ എണ്ണം
             </span>
-            <div className="w-10 h-10 rounded-xl bg-burgundy-deep/10 text-burgundy-deep flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-sage/40 text-forest flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Sparkles className="w-5 h-5 text-emerald" />
             </div>
           </div>
           <div className="space-y-1">
-            <span className="font-heading font-black text-3xl sm:text-4xl text-burgundy-deep block font-mono">
+            <span className="font-heading font-black text-3xl sm:text-4xl text-forest block font-mono">
               {stats?.totalGuests ?? 0}
             </span>
             <p className="text-[11px] text-text-muted">
               കൂടെ പങ്കെടുക്കുന്ന ആകെ അതിഥികൾ
             </p>
           </div>
-          <div className="mt-4 pt-3 border-t border-burgundy-deep/10 flex items-center justify-between text-[11px]">
-            <span className="text-burgundy-deep font-semibold">പൊതു സദസ്യർ</span>
+          <div className="mt-4 pt-3 border-t border-forest/10 flex items-center justify-between text-[11px]">
+            <span className="text-forest font-semibold">പൊതു സദസ്യർ</span>
             <span className="text-text-muted">Total Guests</span>
           </div>
         </div>
@@ -449,7 +449,7 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration, ad
                         {/* Requirement 3: Delete Button */}
                         <button
                           onClick={() => setDeleteItem(item)}
-                          className="p-1 rounded text-burgundy-deep hover:bg-burgundy-surface"
+                          className="p-1 rounded text-red-600 hover:bg-red-50"
                           title="നീക്കം ചെയ്യുക"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -467,29 +467,29 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration, ad
       {/* Requirement 3: Malayalam Confirmation Dialog for Delete */}
       {deleteItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs font-malayalam">
-          <div className="bg-white rounded-3xl border-2 border-burgundy-deep/40 shadow-2xl max-w-sm w-full p-6 text-center space-y-4 animate-fadeIn">
-            <div className="w-14 h-14 rounded-full bg-burgundy-surface border-2 border-burgundy-deep text-burgundy-deep flex items-center justify-center mx-auto shadow-md">
+          <div className="bg-white rounded-3xl border-2 border-red-200 shadow-2xl max-w-sm w-full p-6 text-center space-y-4 animate-fadeIn">
+            <div className="w-14 h-14 rounded-full bg-red-50 border-2 border-red-300 text-red-600 flex items-center justify-center mx-auto shadow-md">
               <Trash2 className="w-7 h-7" />
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-heading font-bold text-lg text-emerald-deep">
+              <h3 className="font-heading font-bold text-lg text-forest">
                 Delete Registration
               </h3>
               
               {/* Exact Requirement 3 Confirmation Text: "ഈ രജിസ്ട്രേഷൻ സ്ഥിരമായി നീക്കം ചെയ്യണോ?" */}
-              <p className="font-malayalam font-bold text-base text-burgundy-deep">
+              <p className="font-malayalam font-bold text-base text-red-700">
                 ഈ രജിസ്ട്രേഷൻ സ്ഥിരമായി നീക്കം ചെയ്യണോ?
               </p>
 
-              <div className="p-3 bg-ivory/80 rounded-xl border border-gold-antique/30 text-xs text-text-primary text-left font-mono">
+              <div className="p-3 bg-sage/20 rounded-xl border border-forest/15 text-xs text-text-primary text-left font-mono">
                 <p><strong>ID:</strong> {deleteItem.registrationId}</p>
                 <p className="font-sans font-semibold"><strong>പേര്:</strong> {deleteItem.name}</p>
               </div>
             </div>
 
             {/* Exact Requirement 3 Buttons: "റദ്ദാക്കുക" and "നീക്കം ചെയ്യുക" */}
-            <div className="flex items-center justify-center space-x-3 pt-3 border-t border-gold-antique/20">
+            <div className="flex items-center justify-center space-x-3 pt-3 border-t border-forest/15">
               <button
                 type="button"
                 onClick={() => setDeleteItem(null)}
@@ -503,7 +503,7 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration, ad
                 type="button"
                 onClick={handleDeleteConfirm}
                 disabled={isDeleting}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-burgundy-deep hover:bg-burgundy-dark text-white text-xs font-malayalam font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-1.5"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-malayalam font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-1.5"
               >
                 {isDeleting ? (
                   <>
