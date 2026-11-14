@@ -43,9 +43,11 @@ export default {
         }
       },
       fontFamily: {
-        heading: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        malayalam: ['"Noto Sans Malayalam"', 'Inter', 'sans-serif'],
+        heading: ['"Montserrat"', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Montserrat"', 'system-ui', '-apple-system', 'sans-serif'],
+        montserrat: ['"Montserrat"', 'system-ui', '-apple-system', 'sans-serif'],
+        malayalam: ['"Manjari"', '"Noto Sans Malayalam"', 'system-ui', 'sans-serif'],
+        manjari: ['"Manjari"', '"Noto Sans Malayalam"', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         'gold': '0 4px 20px -2px rgba(198, 164, 91, 0.25)',
