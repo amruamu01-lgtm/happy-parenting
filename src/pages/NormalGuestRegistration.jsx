@@ -63,6 +63,7 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // Prevent repeated clicks
     setServerError('');
 
     if (!validate()) {

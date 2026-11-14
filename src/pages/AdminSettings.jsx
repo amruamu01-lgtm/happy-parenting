@@ -5,7 +5,8 @@ import {
   XCircle, 
   Server,
   Activity,
-  Info
+  Info,
+  ExternalLink
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
@@ -88,9 +89,30 @@ export default function AdminSettings() {
           <div className="flex items-center space-x-2">
             <span className={`w-3 h-3 rounded-full animate-pulse ${gasUrl ? 'bg-emerald-500' : 'bg-amber-500'}`} />
             <span className="text-xs font-semibold text-text-primary">
-              {gasUrl ? 'ക്ലൗഡ് കണക്റ്റഡ്' : 'ലോക്കൽ ഡാറ്റാബേസ്'}
+              {gasUrl ? 'ക്ലൗഡ് കണക്റ്റഡ്' : 'കണക്ഷൻ ആവശ്യമാണ്'}
             </span>
           </div>
+        </div>
+
+        {/* Cloud Spreadsheet ID Banner */}
+        <div className="p-4 rounded-2xl bg-sage/30 border border-forest/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div>
+            <span className="text-[11px] font-bold text-forest block uppercase tracking-wide">
+              Official Google Spreadsheet Database ID
+            </span>
+            <span className="font-mono font-bold text-emerald text-sm select-all">
+              1ZIHjHI_uNUrAh6IiZzU148I2vHs3z2ZCdbteRKH6SXI
+            </span>
+          </div>
+          <a
+            href="https://docs.google.com/spreadsheets/d/1ZIHjHI_uNUrAh6IiZzU148I2vHs3z2ZCdbteRKH6SXI/edit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3.5 py-2 rounded-xl bg-forest hover:bg-emerald text-white font-bold text-xs flex items-center justify-center space-x-1.5 transition-colors self-start sm:self-auto shrink-0"
+          >
+            <span>ഗൂഗിൾ ഷീറ്റ് തുറക്കുക</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
         </div>
 
         {saveMessage && (

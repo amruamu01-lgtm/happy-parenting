@@ -20,8 +20,8 @@ export default function ReportsExport() {
   const [deptFilter, setDeptFilter] = useState('');
   const [attendanceFilter, setAttendanceFilter] = useState('');
 
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
     try {
       const statsRes = await apiService.getDashboardStats();
       if (statsRes.success) setStats(statsRes.stats);
@@ -31,12 +31,22 @@ export default function ReportsExport() {
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
   useEffect(() => {
     loadData();
+
+    const interval = setInterval(() => loadData(true), 20000);
+    const channel = typeof window !== 'undefined' && window.BroadcastChannel ? new BroadcastChannel('hp_data_sync') : null;
+    if (channel) {
+      channel.onmessage = () => loadData(true);
+    }
+    return () => {
+      clearInterval(interval);
+      if (channel) channel.close();
+    };
   }, []);
 
   const filteredData = registrations.filter(item => {

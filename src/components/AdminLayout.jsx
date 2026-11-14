@@ -74,9 +74,9 @@ export default function AdminLayout({
         {/* Sync Status Badge */}
         <div className="px-5 py-3 bg-forest-dark/60 border-b border-white/10 flex items-center justify-between text-xs">
           <div className="flex items-center space-x-2">
-            <span className={`w-2.5 h-2.5 rounded-full animate-pulse ${gasUrl ? 'bg-emerald-400' : 'bg-emerald-300'}`} />
+            <span className={`w-2.5 h-2.5 rounded-full animate-pulse ${gasUrl ? 'bg-emerald-400' : 'bg-amber-400'}`} />
             <span className="text-white/90 font-medium">
-              {gasUrl ? 'ഗൂഗിൾ ഷീറ്റ്സ് ലൈവ്' : 'ഡാറ്റാബേസ് കണക്റ്റഡ്'}
+              {gasUrl ? 'ഗൂഗിൾ ഷീറ്റ്സ് ലൈവ്' : 'ക്ലൗഡ് URL നൽകുക'}
             </span>
           </div>
           <button 

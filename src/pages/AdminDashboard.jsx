@@ -12,7 +12,8 @@ import {
   TrendingUp,
   Percent,
   Trash2,
-  Loader2
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
@@ -20,37 +21,53 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration, ad
   const [stats, setStats] = useState(null);
   const [recentRegistrations, setRecentRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
   const [deleteItem, setDeleteItem] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
+    setErrorMessage('');
     try {
       const statsRes = await apiService.getDashboardStats();
       if (statsRes.success) {
         setStats(statsRes.stats);
+      } else if (statsRes.message && !isSilent) {
+        setErrorMessage(statsRes.message);
       }
+
       const regRes = await apiService.getRegistrations();
       if (regRes.success && Array.isArray(regRes.data)) {
         setRecentRegistrations(regRes.data.slice(0, 5));
+      } else if (regRes.message && !isSilent) {
+        setErrorMessage(prev => prev || regRes.message);
       }
     } catch (e) {
       console.error(e);
+      if (!isSilent) {
+        setErrorMessage('ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസിൽ നിന്ന് വിവരങ്ങൾ ലഭ്യമാക്കാൻ സാധിച്ചില്ല.');
+      }
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
   useEffect(() => {
     loadData();
 
+    // Cross-device auto-refresh every 20 seconds
+    const interval = setInterval(() => {
+      loadData(true);
+    }, 20000);
+
     const channel = typeof window !== 'undefined' && window.BroadcastChannel ? new BroadcastChannel('hp_data_sync') : null;
     if (channel) {
       channel.onmessage = () => {
-        loadData();
+        loadData(true);
       };
     }
     return () => {
+      clearInterval(interval);
       if (channel) channel.close();
     };
   }, []);
@@ -121,6 +138,25 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration, ad
           </button>
         </div>
       </div>
+
+      {/* Cloud Error Alert if API failed */}
+      {errorMessage && (
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-malayalam flex items-center justify-between shadow-xs">
+          <div className="flex items-center space-x-2.5">
+            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+            <div>
+              <p className="font-bold">ഗൂഗിൾ ഷീറ്റ്സ് ക്ലൗഡ് സ്റ്റാറ്റസ്</p>
+              <p>{errorMessage}</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => loadData()}
+            className="px-3.5 py-1.5 rounded-lg bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold text-xs transition-colors shrink-0"
+          >
+            വീണ്ടും ശ്രമിക്കുക
+          </button>
+        </div>
+      )}
 
       {/* ========================================================
           4 PRIMARY STATISTIC CARDS (Exact Required Metrics)

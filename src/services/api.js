@@ -1,57 +1,63 @@
 /**
- * API Service for Happy Parenting Web Application
- * Handles communication with Google Apps Script Web App API.
- * NO dummy or sample records. Clean state on startup.
- * NO localStorage / sessionStorage for registration data.
+ * API Service for HAPPY PARENTING Web Application
+ * Connected directly to Google Apps Script Cloud Web App API & Google Sheets.
+ * 
+ * STRICT ARCHITECTURE RULES:
+ * 1. Zero localStorage, sessionStorage, or IndexedDB for registration/application data.
+ * 2. Every single CRUD operation directly reads and writes to Google Sheets via Apps Script.
+ * 3. NO fake, dummy, or fallback local data returned when API requests fail.
+ * 4. Multi-device cloud sync: all devices read from the same Google Sheets database.
  */
 
 const STORAGE_KEYS = {
-  ADMINS: 'hp_admins_v1',
-  SETTINGS: 'hp_settings_v1',
-  ACTIVITY_LOGS: 'hp_logs_v1',
   API_URL: 'hp_gas_api_url',
   AUTH_SESSION: 'hp_auth_session'
 };
 
-// Strict Requirement: Ensure NO registration data is stored in localStorage/sessionStorage
+// Strict Requirement 1 & 2: Wipe any legacy registration data from browser storage
 if (typeof window !== 'undefined') {
   try {
     localStorage.removeItem('hp_registrations_v1');
+    localStorage.removeItem('hp_admins_v1');
+    localStorage.removeItem('hp_settings_v1');
+    localStorage.removeItem('hp_logs_v1');
     sessionStorage.removeItem('hp_registrations_v1');
+    sessionStorage.removeItem('hp_admins_v1');
   } catch (e) {
     // Ignore storage clear errors
   }
 }
 
-// In-Memory Registration Data (Clean, starts empty - NO dummy or fake records)
-let inMemoryRegistrations = [];
-let inMemoryLogs = [];
-
-// Helper to broadcast changes across open tabs/windows
+// BroadcastChannel for instant synchronization across tabs on the same device
 const broadcastChannel = typeof window !== 'undefined' && window.BroadcastChannel 
   ? new BroadcastChannel('hp_data_sync') 
   : null;
 
 function notifyDataChanged() {
   if (broadcastChannel) {
-    broadcastChannel.postMessage({ type: 'DATA_UPDATED', timestamp: Date.now() });
+    try {
+      broadcastChannel.postMessage({ type: 'DATA_UPDATED', timestamp: Date.now() });
+    } catch (e) {
+      console.warn('BroadcastChannel error:', e);
+    }
   }
 }
 
 export const apiService = {
-  // Get active Google Apps Script Web App URL
+  // Get active Google Apps Script Web App URL from environment or Admin Settings
   getGasUrl() {
     try {
-      const stored = localStorage.getItem(STORAGE_KEYS.API_URL);
-      if (stored && stored.trim()) return stored.trim();
       const envUrl = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL;
       if (envUrl && envUrl.trim()) return envUrl.trim();
+      const stored = localStorage.getItem(STORAGE_KEYS.API_URL);
+      if (stored && stored.trim()) return stored.trim();
       return '';
     } catch (e) {
       return '';
     }
   },
 
+  // Set Google Apps Script Web App URL override (Admin Config)
   setGasUrl(url) {
     try {
       const clean = (url || '').trim();
@@ -62,7 +68,7 @@ export const apiService = {
       }
       notifyDataChanged();
     } catch (e) {
-      console.error(e);
+      console.error('Error saving GAS URL:', e);
     }
   },
 
@@ -87,7 +93,7 @@ export const apiService = {
       if (!response.ok) {
         return { 
           success: false, 
-          message: `സെർവർ പ്രതികരണം പരാജയപ്പെട്ടു (Status: ${response.status})` 
+          message: `സെർവർ കണക്ഷൻ പരാജയപ്പെട്ടു (Status: ${response.status})` 
         };
       }
 
@@ -95,31 +101,29 @@ export const apiService = {
       return { 
         success: data.success || data.status === 'online', 
         data, 
-        message: 'ഗൂഗിൾ ഷീറ്റ്സ് കണക്ഷൻ വിജയകരമാണ്!' 
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ക്ലൗഡ് കണക്ഷൻ വിജയകരമാണ്!' 
       };
     } catch (err) {
       return { 
         success: false, 
         error: err.message, 
-        message: 'കണക്റ്റ് ചെയ്യാനായില്ല. ഗൂഗിൾ ഷീറ്റ് അനുമതികളും വെബ് ആപ്പ് വിന്യാസവും പരിശോധിക്കുക.' 
+        message: 'ഗൂഗിൾ ഷീറ്റിലേക്ക് കണക്റ്റ് ചെയ്യാനായില്ല. ദയവായി Web App വിന്യാസവും അനുമതികളും പരിശോധിക്കുക.' 
       };
     }
   },
 
-  // Public: Create Registration (Saves directly to Google Sheets database)
+  // 1. Create Registration: Saves directly to Google Sheets
   async createRegistration(formData) {
     const gasUrl = this.getGasUrl();
 
-    // If Google Apps Script URL is not configured, inform with a clear Malayalam message
     if (!gasUrl) {
       return {
         success: false,
-        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസ് കണക്ഷൻ സജ്ജീകരിച്ചിട്ടില്ല. അഡ്മിൻ പാനലിൽ Google Apps Script Web App URL നൽകുക.'
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ബാക്കെൻഡ് URL സജ്ജീകരിച്ചിട്ടില്ല. അഡ്മിൻ പാനലിൽ Google Apps Script Web App URL നൽകുക.'
       };
     }
 
     try {
-      // Use text/plain to avoid CORS preflight issues with Google Apps Script
       const response = await fetch(gasUrl, {
         method: 'POST',
         headers: {
@@ -139,13 +143,14 @@ export const apiService = {
       const res = await response.json();
 
       if (res && res.success) {
-        if (res.registration) {
-          inMemoryRegistrations.unshift(res.registration);
-        }
         notifyDataChanged();
         return res;
       } else if (res && res.isDuplicate) {
-        return res;
+        return {
+          success: false,
+          isDuplicate: true,
+          message: res.message || 'ഈ മൊബൈൽ നമ്പർ ഉപയോഗിച്ച് ഇതിനകം രജിസ്ട്രേഷൻ പൂർത്തിയായിട്ടുണ്ട്.'
+        };
       } else {
         return {
           success: false,
@@ -153,259 +158,319 @@ export const apiService = {
         };
       }
     } catch (err) {
-      console.error('Registration saving to Google Sheets failed:', err);
+      console.error('Registration to Google Sheets failed:', err);
       return {
         success: false,
-        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസിലേക്ക് കണക്റ്റ് ചെയ്യാനായില്ല. ഇന്റർനെറ്റ് കണക്ഷനും അനുമതികളും പരിശോധിക്കുക.'
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസിലേക്ക് കണക്റ്റ് ചെയ്യാനായില്ല. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.'
       };
     }
   },
 
-  // Admin: Get all registrations
+  // 2. Get Registrations: Fetches directly from Google Sheets
   async getRegistrations(params = {}) {
     const gasUrl = this.getGasUrl();
 
-    if (gasUrl) {
-      try {
-        const queryParams = new URLSearchParams({
-          action: 'getRegistrations',
-          ...params
-        }).toString();
+    if (!gasUrl) {
+      return {
+        success: false,
+        data: [],
+        count: 0,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ബാക്കെൻഡ് URL സജ്ജീകരിച്ചിട്ടില്ല.'
+      };
+    }
 
-        const separator = gasUrl.includes('?') ? '&' : '?';
-        const response = await fetch(`${gasUrl}${separator}${queryParams}`, { 
-          method: 'GET',
-          headers: { 'Accept': 'application/json' },
-          redirect: 'follow'
-        });
+    try {
+      const queryParams = new URLSearchParams({
+        action: 'getRegistrations',
+        ...params
+      }).toString();
 
-        if (response.ok) {
-          const res = await response.json();
-          if (res && res.success && Array.isArray(res.data)) {
-            inMemoryRegistrations = res.data;
-            return res;
-          }
-        }
-      } catch (err) {
-        console.warn('Failed to fetch from Google Apps Script:', err);
+      const separator = gasUrl.includes('?') ? '&' : '?';
+      const response = await fetch(`${gasUrl}${separator}${queryParams}`, { 
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        redirect: 'follow'
+      });
+
+      if (!response.ok) {
+        throw new Error(`സെർവർ പിശക് (${response.status})`);
       }
-    }
 
-    // Return current memory state with filtering
-    let list = [...inMemoryRegistrations];
-    const search = (params.search || '').toLowerCase().trim();
-    const typeFilter = params.type || '';
-    const deptFilter = params.department || '';
-    const attendanceFilter = params.attendance || '';
-
-    if (typeFilter) {
-      list = list.filter(r => r.registrationType === typeFilter);
+      const res = await response.json();
+      if (res && res.success && Array.isArray(res.data)) {
+        return {
+          success: true,
+          data: res.data,
+          count: res.count !== undefined ? res.count : res.data.length
+        };
+      } else {
+        return {
+          success: false,
+          data: [],
+          count: 0,
+          message: res.message || 'ഡാറ്റ ലഭ്യമാക്കാൻ സാധിച്ചില്ല.'
+        };
+      }
+    } catch (err) {
+      console.error('Fetch from Google Sheets failed:', err);
+      return {
+        success: false,
+        data: [],
+        count: 0,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസിൽ നിന്ന് വിവരങ്ങൾ ലഭ്യമാക്കാൻ സാധിച്ചില്ല. കണക്ഷൻ പരിശോധിക്കുക.'
+      };
     }
-    if (deptFilter) {
-      list = list.filter(r => r.studentDepartment === deptFilter);
-    }
-    if (attendanceFilter) {
-      list = list.filter(r => r.attendanceStatus === attendanceFilter);
-    }
-    if (search) {
-      list = list.filter(r => 
-        (r.name && r.name.toLowerCase().includes(search)) ||
-        (r.mobileNumber && r.mobileNumber.includes(search)) ||
-        (r.registrationId && r.registrationId.toLowerCase().includes(search)) ||
-        (r.studentName && r.studentName.toLowerCase().includes(search)) ||
-        (r.addressPlace && r.addressPlace.toLowerCase().includes(search))
-      );
-    }
-
-    return { success: true, data: list, count: list.length };
   },
 
-  // Admin: Update registration
+  // 3. Update Registration: Directly updates Google Sheets
   async updateRegistration(registrationData, adminId = 'ADMIN') {
     const gasUrl = this.getGasUrl();
 
-    if (gasUrl) {
-      try {
-        const response = await fetch(gasUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'updateRegistration',
-            registration: registrationData,
-            adminId
-          }),
-          redirect: 'follow'
-        });
-        if (response.ok) {
-          const res = await response.json();
-          if (res && res.success) {
-            const index = inMemoryRegistrations.findIndex(r => r.registrationId === registrationData.registrationId);
-            if (index !== -1) {
-              inMemoryRegistrations[index] = { ...inMemoryRegistrations[index], ...registrationData };
-            }
-            notifyDataChanged();
-            return res;
-          }
-        }
-      } catch (e) {
-        console.warn('Update via GAS failed:', e);
-      }
-    }
-
-    const index = inMemoryRegistrations.findIndex(r => r.registrationId === registrationData.registrationId);
-    if (index !== -1) {
-      inMemoryRegistrations[index] = {
-        ...inMemoryRegistrations[index],
-        ...registrationData,
-        updatedDate: new Date().toLocaleDateString()
+    if (!gasUrl) {
+      return {
+        success: false,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ബാക്കെൻഡ് URL സജ്ജീകരിച്ചിട്ടില്ല.'
       };
-      this.logActivity(adminId, 'രജിസ്ട്രേഷൻ വിവരങ്ങൾ പുതുക്കി', registrationData.registrationId);
-      notifyDataChanged();
-      return { success: true, message: 'രജിസ്ട്രേഷൻ വിജയകരമായി പുതുക്കി', registration: inMemoryRegistrations[index] };
     }
 
-    return { success: false, message: 'രജിസ്ട്രേഷൻ കണ്ടെത്താനായില്ല' };
+    try {
+      const response = await fetch(gasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'updateRegistration',
+          registration: registrationData,
+          adminId
+        }),
+        redirect: 'follow'
+      });
+
+      if (!response.ok) {
+        throw new Error(`സെർവർ പിശക് (${response.status})`);
+      }
+
+      const res = await response.json();
+      if (res && res.success) {
+        notifyDataChanged();
+        return {
+          success: true,
+          message: res.message || 'രജിസ്ട്രേഷൻ ഗൂഗിൾ ഷീറ്റിൽ വിജയകരമായി പുതുക്കി'
+        };
+      } else {
+        return {
+          success: false,
+          message: res.message || 'ഗൂഗിൾ ഷീറ്റിൽ വിവരങ്ങൾ പുതുക്കാൻ സാധിച്ചില്ല.'
+        };
+      }
+    } catch (err) {
+      console.error('Update via GAS failed:', err);
+      return {
+        success: false,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ക്ലൗഡ് അപ്ഡേറ്റ് പരാജയപ്പെട്ടു. നെറ്റ്‌വർക്ക് പരിശോധിക്കുക.'
+      };
+    }
   },
 
-  // Admin: Delete registration (Deletes record from Google Sheets)
+  // 4. Delete Registration: Directly deletes row from Google Sheets
   async deleteRegistration(id, adminId = 'ADMIN') {
     const gasUrl = this.getGasUrl();
-    let backendSuccess = false;
 
-    if (gasUrl) {
-      try {
-        const response = await fetch(gasUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'deleteRegistration', id, adminId }),
-          redirect: 'follow'
-        });
-        if (response.ok) {
-          const res = await response.json();
-          if (res && res.success) {
-            backendSuccess = true;
-          }
-        }
-      } catch (e) {
-        console.warn('GAS delete request error:', e);
-      }
+    if (!gasUrl) {
+      return {
+        success: false,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ബാക്കെൻഡ് URL സജ്ജീകരിച്ചിട്ടില്ല.'
+      };
     }
 
-    inMemoryRegistrations = inMemoryRegistrations.filter(r => r.registrationId !== id);
-    this.logActivity(adminId, 'രജിസ്ട്രേഷൻ നീക്കം ചെയ്തു', id);
-    notifyDataChanged();
+    try {
+      const response = await fetch(gasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'deleteRegistration',
+          id,
+          adminId
+        }),
+        redirect: 'follow'
+      });
 
-    return { 
-      success: true, 
-      backendDeleted: backendSuccess,
-      message: 'രജിസ്ട്രേഷൻ വിജയകരമായി നീക്കം ചെയ്തു' 
-    };
+      if (!response.ok) {
+        throw new Error(`സെർവർ പിശക് (${response.status})`);
+      }
+
+      const res = await response.json();
+      if (res && res.success) {
+        notifyDataChanged();
+        return {
+          success: true,
+          message: 'രജിസ്ട്രേഷൻ ഗൂഗിൾ ഷീറ്റിൽ നിന്ന് സ്ഥിരമായി നീക്കം ചെയ്തു'
+        };
+      } else {
+        return {
+          success: false,
+          message: res.message || 'ഗൂഗിൾ ഷീറ്റിൽ നിന്ന് രജിസ്ട്രേഷൻ നീക്കം ചെയ്യാൻ സാധിച്ചില്ല.'
+        };
+      }
+    } catch (err) {
+      console.error('Delete via GAS failed:', err);
+      return {
+        success: false,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സിൽ നിന്ന് നീക്കം ചെയ്യാൻ സാധിച്ചില്ല. നെറ്റ്‌വർക്ക് പരിശോധിക്കുക.'
+      };
+    }
   },
 
-  // Admin: Update attendance
+  // 5. Update Attendance: Directly updates Attendance column in Google Sheets
   async updateAttendance(id, status, adminId = 'ADMIN') {
     const gasUrl = this.getGasUrl();
 
-    if (gasUrl) {
-      try {
-        await fetch(gasUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'updateAttendance', id, status, adminId }),
-          redirect: 'follow'
-        });
-      } catch (e) {
-        console.warn('GAS attendance update failed:', e);
-      }
+    if (!gasUrl) {
+      return {
+        success: false,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ബാക്കെൻഡ് URL സജ്ജീകരിച്ചിട്ടില്ല.'
+      };
     }
 
-    const index = inMemoryRegistrations.findIndex(r => r.registrationId === id);
-    if (index !== -1) {
-      inMemoryRegistrations[index].attendanceStatus = status;
-      inMemoryRegistrations[index].updatedDate = new Date().toLocaleDateString();
-      this.logActivity(adminId, `ഹാജർ രേഖപ്പെടുത്തി: ${status}`, id);
-      notifyDataChanged();
-      return { success: true, message: `ഹാജർ നില പുതുക്കി` };
+    try {
+      const response = await fetch(gasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'updateAttendance',
+          id,
+          status,
+          adminId
+        }),
+        redirect: 'follow'
+      });
+
+      if (!response.ok) {
+        throw new Error(`സെർവർ പിശക് (${response.status})`);
+      }
+
+      const res = await response.json();
+      if (res && res.success) {
+        notifyDataChanged();
+        return {
+          success: true,
+          message: res.message || 'ഹാജർ നില ഗൂഗിൾ ഷീറ്റിൽ പുതുക്കി'
+        };
+      } else {
+        return {
+          success: false,
+          message: res.message || 'ഹാജർ നില ഗൂഗിൾ ഷീറ്റിൽ പുതുക്കാൻ സാധിച്ചില്ല.'
+        };
+      }
+    } catch (err) {
+      console.error('Attendance update via GAS failed:', err);
+      return {
+        success: false,
+        message: 'ഹാജർ നില ക്ലൗഡിൽ പുതുക്കാൻ സാധിച്ചില്ല. നെറ്റ്‌വർക്ക് പരിശോധിക്കുക.'
+      };
     }
-    return { success: false, message: 'രജിസ്ട്രേഷൻ കണ്ടെത്താനായില്ല' };
   },
 
-  // Admin: Dashboard stats
+  // 6. Dashboard Statistics: Computed directly from Google Sheets
   async getDashboardStats() {
     const gasUrl = this.getGasUrl();
 
-    if (gasUrl) {
-      try {
-        const separator = gasUrl.includes('?') ? '&' : '?';
-        const response = await fetch(`${gasUrl}${separator}action=getDashboardStats`, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' },
-          redirect: 'follow'
-        });
-        if (response.ok) {
-          const res = await response.json();
-          if (res && res.success && res.stats) {
-            return res;
-          }
-        }
-      } catch (e) {
-        // fallback to memory
-      }
+    const emptyStats = {
+      totalStudentParentRegs: 0,
+      totalGuestRegs: 0,
+      totalParents: 0,
+      totalGuests: 0,
+      totalRegistrations: 0,
+      totalAttendees: 0,
+      darsCount: 0,
+      hifzCount: 0,
+      presentCount: 0,
+      absentCount: 0,
+      attendanceRate: 0
+    };
+
+    if (!gasUrl) {
+      return {
+        success: false,
+        stats: emptyStats,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ബാക്കെൻഡ് URL സജ്ജീകരിച്ചിട്ടില്ല.'
+      };
     }
 
-    let studentParentRegs = 0;
-    let guestRegs = 0;
-    let totalParents = 0;
-    let totalGuests = 0;
-    let darsCount = 0;
-    let hifzCount = 0;
-    let presentCount = 0;
-    let absentCount = 0;
+    try {
+      const separator = gasUrl.includes('?') ? '&' : '?';
+      const response = await fetch(`${gasUrl}${separator}action=getDashboardStats`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        redirect: 'follow'
+      });
 
-    inMemoryRegistrations.forEach(r => {
-      const parents = parseInt(r.parentsAttending, 10) || 0;
-      const guests = parseInt(r.guestsCount, 10) || 0;
-
-      if (r.registrationType === 'Student Parent') {
-        studentParentRegs++;
-        totalParents += (parents > 0 ? parents : 1);
-        if (r.studentDepartment === 'Dars') darsCount++;
-        if (r.studentDepartment === 'Hifz') hifzCount++;
-      } else if (r.registrationType === 'Normal Guest') {
-        guestRegs++;
-        totalGuests += (guests > 0 ? guests : 1);
+      if (response.ok) {
+        const res = await response.json();
+        if (res && res.success && res.stats) {
+          return {
+            success: true,
+            stats: res.stats
+          };
+        }
       }
-
-      if (r.attendanceStatus === 'Present') {
-        presentCount++;
-      } else {
-        absentCount++;
-      }
-    });
-
-    const totalRegistrations = studentParentRegs + guestRegs;
-    const totalAttendees = totalParents + totalGuests;
-    const attendanceRate = totalRegistrations > 0 ? Math.round((presentCount / totalRegistrations) * 100) : 0;
-
-    return {
-      success: true,
-      stats: {
-        totalStudentParentRegs: studentParentRegs,
-        totalGuestRegs: guestRegs,
-        totalParents,
-        totalGuests,
-        totalRegistrations,
-        totalAttendees,
-        darsCount,
-        hifzCount,
-        presentCount,
-        absentCount,
-        attendanceRate
-      }
-    };
+      return {
+        success: false,
+        stats: emptyStats,
+        message: 'ഗൂഗിൾ ഷീറ്റ്സിൽ നിന്ന് കണക്കുകൾ ലഭ്യമായില്ല.'
+      };
+    } catch (err) {
+      console.error('Dashboard stats fetch failed:', err);
+      return {
+        success: false,
+        stats: emptyStats,
+        message: 'ക്ലൗഡ് കണക്ഷൻ പിശക്. കണക്കുകൾ ലഭ്യമായില്ല.'
+      };
+    }
   },
 
-  // Admin: Login
+  // 7. Activity Logs: Fetches directly from Google Sheets ActivityLogs
+  async getActivityLogs() {
+    const gasUrl = this.getGasUrl();
+
+    if (!gasUrl) {
+      return {
+        success: false,
+        logs: [],
+        message: 'ഗൂഗിൾ ഷീറ്റ്സ് ബാക്കെൻഡ് URL സജ്ജീകരിച്ചിട്ടില്ല.'
+      };
+    }
+
+    try {
+      const separator = gasUrl.includes('?') ? '&' : '?';
+      const response = await fetch(`${gasUrl}${separator}action=getActivityLogs`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        redirect: 'follow'
+      });
+
+      if (response.ok) {
+        const res = await response.json();
+        if (res && res.success && Array.isArray(res.logs)) {
+          return {
+            success: true,
+            logs: res.logs
+          };
+        }
+      }
+      return {
+        success: false,
+        logs: []
+      };
+    } catch (err) {
+      console.error('Activity logs fetch failed:', err);
+      return {
+        success: false,
+        logs: []
+      };
+    }
+  },
+
+  // 8. Admin Authentication: Verifies against Google Sheets Admins sheet
   async adminLogin(username, password) {
     const gasUrl = this.getGasUrl();
 
@@ -421,22 +486,26 @@ export const apiService = {
           }),
           redirect: 'follow'
         });
+
         if (response.ok) {
           const res = await response.json();
-          if (res && res.success) {
+          if (res && res.success && res.admin) {
             const session = {
               ...res.admin,
               expiresAt: Date.now() + 8 * 60 * 60 * 1000
             };
-            localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(session));
-            return res;
+            try {
+              localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(session));
+            } catch (e) {}
+            return { success: true, admin: session };
           }
         }
       } catch (e) {
-        console.warn('GAS login failed:', e);
+        console.warn('GAS admin login attempt failed:', e);
       }
     }
 
+    // Default emergency master credentials
     const cleanUser = (username || '').trim().toLowerCase();
     if ((cleanUser === 'admin' || cleanUser === 'admin@thazkiya.com') && password === 'thazkiya@2026') {
       const session = {
@@ -446,12 +515,16 @@ export const apiService = {
         token: btoa(`ADM-001:${Date.now()}`),
         expiresAt: Date.now() + 8 * 60 * 60 * 1000
       };
-      localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(session));
-      this.logActivity('ADM-001', 'അഡ്മിൻ ലോഗിൻ ചെയ്തു', 'N/A');
+      try {
+        localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(session));
+      } catch (e) {}
       return { success: true, admin: session };
     }
 
-    return { success: false, message: 'തെറ്റായ ഉപയോക്തൃനാമം അല്ലെങ്കിൽ പാസ്‌വേഡ്' };
+    return { 
+      success: false, 
+      message: 'തെറ്റായ അഡ്മിൻ യൂസർനെയിം അല്ലെങ്കിൽ പാസ്‌വേഡ്' 
+    };
   },
 
   getAuthSession() {
@@ -470,51 +543,9 @@ export const apiService = {
   },
 
   logout() {
-    const session = this.getAuthSession();
-    if (session) {
-      this.logActivity(session.adminId, 'അഡ്മിൻ ലോഗൗട്ട് ചെയ്തു', 'N/A');
-    }
-    localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
+    try {
+      localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
+    } catch (e) {}
     notifyDataChanged();
-  },
-
-  // Activity logs
-  logActivity(adminId, action, regId) {
-    const now = new Date();
-    const logItem = {
-      logId: 'LOG-' + Math.floor(1000 + Math.random() * 9000),
-      adminId: adminId || 'SYSTEM',
-      action,
-      registrationId: regId || 'N/A',
-      date: now.toLocaleDateString(),
-      time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    inMemoryLogs.unshift(logItem);
-    if (inMemoryLogs.length > 100) inMemoryLogs.pop();
-  },
-
-  async getActivityLogs() {
-    const gasUrl = this.getGasUrl();
-    if (gasUrl) {
-      try {
-        const separator = gasUrl.includes('?') ? '&' : '?';
-        const response = await fetch(`${gasUrl}${separator}action=getActivityLogs`, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' },
-          redirect: 'follow'
-        });
-        if (response.ok) {
-          const res = await response.json();
-          if (res && res.success && Array.isArray(res.logs)) {
-            return res;
-          }
-        }
-      } catch (e) {}
-    }
-
-    return {
-      success: true,
-      logs: inMemoryLogs
-    };
   }
 };

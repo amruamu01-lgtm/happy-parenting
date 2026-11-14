@@ -18,28 +18,42 @@ export default function AttendanceManagement({ adminUser }) {
   const [statusFilter, setStatusFilter] = useState('');
   const [updatingId, setUpdatingId] = useState(null);
 
-  const loadData = async () => {
-    setLoading(true);
+  const [apiError, setApiError] = useState('');
+
+  const loadData = async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
+    setApiError('');
     try {
       const res = await apiService.getRegistrations();
       if (res.success && Array.isArray(res.data)) {
         setRegistrations(res.data);
+      } else if (res.message && !isSilent) {
+        setApiError(res.message);
       }
     } catch (e) {
       console.error(e);
+      if (!isSilent) {
+        setApiError('ഗൂഗിൾ ഷീറ്റിൽ നിന്ന് ഹാജർ വിവരങ്ങൾ ലഭ്യമാക്കാൻ സാധിച്ചില്ല.');
+      }
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
   useEffect(() => {
     loadData();
 
+    // Cross-device multi-client synchronization (every 20 seconds)
+    const interval = setInterval(() => {
+      loadData(true);
+    }, 20000);
+
     const channel = typeof window !== 'undefined' && window.BroadcastChannel ? new BroadcastChannel('hp_data_sync') : null;
     if (channel) {
-      channel.onmessage = () => loadData();
+      channel.onmessage = () => loadData(true);
     }
     return () => {
+      clearInterval(interval);
       if (channel) channel.close();
     };
   }, []);
@@ -53,9 +67,12 @@ export default function AttendanceManagement({ adminUser }) {
         setRegistrations(prev => 
           prev.map(r => r.registrationId === item.registrationId ? { ...r, attendanceStatus: newStatus } : r)
         );
+      } else {
+        alert(res.message || 'ഹാജർ നില പുതുക്കാൻ സാധിച്ചില്ല.');
       }
     } catch (e) {
       console.error(e);
+      alert('ക്ലൗഡ് അപ്ഡേറ്റ് പരാജയപ്പെട്ടു.');
     } finally {
       setUpdatingId(null);
     }

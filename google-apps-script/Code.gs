@@ -15,6 +15,19 @@
  * 8. Copy the Web App URL and paste it into the React application Settings / .env
  */
 
+const SPREADSHEET_ID = '1ZIHjHI_uNUrAh6IiZzU148I2vHs3z2ZCdbteRKH6SXI';
+
+function getSpreadsheet() {
+  if (typeof SPREADSHEET_ID !== 'undefined' && SPREADSHEET_ID && SPREADSHEET_ID.trim()) {
+    try {
+      return SpreadsheetApp.openById(SPREADSHEET_ID.trim());
+    } catch (e) {
+      console.warn('Could not open spreadsheet by ID, falling back to active spreadsheet:', e);
+    }
+  }
+  return getSpreadsheet();
+}
+
 const SHEET_NAMES = {
   REGISTRATIONS: 'Registrations',
   ADMINS: 'Admins',
@@ -62,7 +75,7 @@ const LOG_HEADERS = [
  * Setup function to initialize sheets and default data
  */
 function setupDatabase() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
 
   // 1. Registrations Sheet
   let regSheet = ss.getSheetByName(SHEET_NAMES.REGISTRATIONS);
@@ -265,7 +278,7 @@ function handleAdminLogin(username, password) {
     return { success: false, message: 'Username and password are required' };
   }
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const adminSheet = ss.getSheetByName(SHEET_NAMES.ADMINS);
   if (!adminSheet) return { success: false, message: 'Admins sheet not initialized' };
 
@@ -329,7 +342,7 @@ function handleCreateRegistration(data) {
     }
   }
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAMES.REGISTRATIONS);
   if (!sheet) return { success: false, message: 'Registrations sheet missing' };
 
@@ -421,7 +434,7 @@ function handleCreateRegistration(data) {
  * Get all registrations with filtering & search
  */
 function handleGetRegistrations(params) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAMES.REGISTRATIONS);
   if (!sheet) return { success: false, data: [] };
 
@@ -485,7 +498,7 @@ function handleGetRegistrations(params) {
 function handleGetRegistrationById(id) {
   if (!id) return { success: false, message: 'ID required' };
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAMES.REGISTRATIONS);
   const values = sheet.getDataRange().getValues();
 
@@ -526,7 +539,7 @@ function handleUpdateRegistration(data) {
     return { success: false, message: 'Registration ID required for update' };
   }
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAMES.REGISTRATIONS);
   const values = sheet.getDataRange().getValues();
 
@@ -573,7 +586,7 @@ function handleUpdateRegistration(data) {
 function handleDeleteRegistration(id, adminId) {
   if (!id) return { success: false, message: 'ID required' };
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAMES.REGISTRATIONS);
   const values = sheet.getDataRange().getValues();
 
@@ -594,7 +607,7 @@ function handleDeleteRegistration(id, adminId) {
 function handleUpdateAttendance(id, status, adminId) {
   if (!id || !status) return { success: false, message: 'ID and Status are required' };
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAMES.REGISTRATIONS);
   const values = sheet.getDataRange().getValues();
 
@@ -614,7 +627,7 @@ function handleUpdateAttendance(id, status, adminId) {
  * Dashboard Statistics
  */
 function handleGetDashboardStats() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAMES.REGISTRATIONS);
   if (!sheet) return { success: false };
 
@@ -698,7 +711,7 @@ function handleGetReports() {
  */
 function logActivity(adminId, action, regId) {
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = getSpreadsheet();
     const sheet = ss.getSheetByName(SHEET_NAMES.ACTIVITY_LOGS);
     if (!sheet) return;
 
@@ -718,7 +731,7 @@ function logActivity(adminId, action, regId) {
 }
 
 function handleGetActivityLogs() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAMES.ACTIVITY_LOGS);
   if (!sheet) return { success: true, logs: [] };
 
@@ -742,7 +755,7 @@ function handleGetActivityLogs() {
  * Settings
  */
 function handleGetSettings() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAMES.SETTINGS);
   if (!sheet) return { success: true, settings: {} };
 

@@ -46,29 +46,42 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
   });
   const [modalError, setModalError] = useState('');
   const [successToast, setSuccessToast] = useState('');
+  const [apiError, setApiError] = useState('');
 
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
+    setApiError('');
     try {
       const res = await apiService.getRegistrations();
       if (res.success && Array.isArray(res.data)) {
         setRegistrations(res.data);
+      } else if (res.message && !isSilent) {
+        setApiError(res.message);
       }
     } catch (e) {
       console.error(e);
+      if (!isSilent) {
+        setApiError('ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസിൽ നിന്ന് വിവരങ്ങൾ ലഭ്യമാക്കാൻ സാധിച്ചില്ല.');
+      }
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
   useEffect(() => {
     loadData();
 
+    // Cross-device multi-client synchronization (every 20 seconds)
+    const interval = setInterval(() => {
+      loadData(true);
+    }, 20000);
+
     const channel = typeof window !== 'undefined' && window.BroadcastChannel ? new BroadcastChannel('hp_data_sync') : null;
     if (channel) {
-      channel.onmessage = () => loadData();
+      channel.onmessage = () => loadData(true);
     }
     return () => {
+      clearInterval(interval);
       if (channel) channel.close();
     };
   }, []);
@@ -236,6 +249,22 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
             </button>
           </div>
         </div>
+
+        {/* API Error Notification */}
+        {apiError && (
+          <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-malayalam flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>{apiError}</span>
+            </div>
+            <button 
+              onClick={() => loadData()}
+              className="px-3 py-1 rounded-lg bg-amber-200 hover:bg-amber-300 font-bold"
+            >
+              വീണ്ടും ശ്രമിക്കുക
+            </button>
+          </div>
+        )}
 
         {/* Filters and Search Bar */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 font-malayalam">
