@@ -16,6 +16,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import { API_CONFIG } from '../config/apiConfig';
 
 export default function AdminDashboard({ setActivePage, onSelectRegistration, adminUser }) {
   const [stats, setStats] = useState(null);
@@ -55,10 +56,10 @@ export default function AdminDashboard({ setActivePage, onSelectRegistration, ad
   useEffect(() => {
     loadData();
 
-    // Cross-device auto-refresh every 20 seconds
+    // Cross-device multi-client auto-refresh every 12 seconds (10-15s requirement)
     const interval = setInterval(() => {
       loadData(true);
-    }, 20000);
+    }, API_CONFIG.AUTO_REFRESH_INTERVAL_MS || 12000);
 
     const channel = typeof window !== 'undefined' && window.BroadcastChannel ? new BroadcastChannel('hp_data_sync') : null;
     if (channel) {

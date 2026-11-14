@@ -14,6 +14,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import { API_CONFIG } from '../config/apiConfig';
 
 export default function RegistrationManagement({ adminUser, onUpdateStats }) {
   const [registrations, setRegistrations] = useState([]);
@@ -71,10 +72,10 @@ export default function RegistrationManagement({ adminUser, onUpdateStats }) {
   useEffect(() => {
     loadData();
 
-    // Cross-device multi-client synchronization (every 20 seconds)
+    // Cross-device multi-client synchronization (every 12 seconds, 10-15s requirement)
     const interval = setInterval(() => {
       loadData(true);
-    }, 20000);
+    }, API_CONFIG.AUTO_REFRESH_INTERVAL_MS || 12000);
 
     const channel = typeof window !== 'undefined' && window.BroadcastChannel ? new BroadcastChannel('hp_data_sync') : null;
     if (channel) {

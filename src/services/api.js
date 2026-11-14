@@ -9,9 +9,11 @@
  * 4. Multi-device cloud sync: all devices read from the same Google Sheets database.
  */
 
+import { API_CONFIG } from '../config/apiConfig';
+
 const STORAGE_KEYS = {
-  API_URL: 'hp_gas_api_url',
-  AUTH_SESSION: 'hp_auth_session'
+  API_URL: API_CONFIG.STORAGE_KEY_ENDPOINT || 'hp_gas_api_url',
+  AUTH_SESSION: API_CONFIG.STORAGE_KEY_SESSION || 'hp_auth_session'
 };
 
 // Strict Requirement 1 & 2: Wipe any legacy registration data from browser storage
@@ -220,6 +222,16 @@ export const apiService = {
         message: 'ഗൂഗിൾ ഷീറ്റ്സ് ഡാറ്റാബേസിൽ നിന്ന് വിവരങ്ങൾ ലഭ്യമാക്കാൻ സാധിച്ചില്ല. കണക്ഷൻ പരിശോധിക്കുക.'
       };
     }
+  },
+
+  // 2b. Search Registrations directly from Google Sheets
+  async searchRegistrations(query = '') {
+    return this.getRegistrations({ search: query });
+  },
+
+  // 2c. Filter Registrations directly from Google Sheets
+  async filterRegistrations(filters = {}) {
+    return this.getRegistrations(filters);
   },
 
   // 3. Update Registration: Directly updates Google Sheets

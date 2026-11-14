@@ -47,15 +47,19 @@ A complete, high-performance, mobile-first web application featuring:
 - **Secondary Text:** `#77766D`
 
 ### Typography:
-- **Headings:** Playfair Display
-- **Body & Controls:** Inter
-- **Malayalam Scripts:** Noto Sans Malayalam
+- **Headings & English:** Montserrat
+- **Malayalam Scripts:** Anek Malayalam
 
 ---
 
-## 🗄️ Google Sheets & Apps Script Backend Architecture
+## 🗄️ Google Sheets & Apps Script Cloud Database Architecture
 
-Google Sheets is the **only main database**.
+Google Sheets is the **sole single source of truth** for all application data across all devices.
+
+- **Spreadsheet ID:** `1ZIHjHI_uNUrAh6IiZzU148I2vHs3z2ZCdbteRKH6SXI`
+- **Spreadsheet URL:** `https://docs.google.com/spreadsheets/d/1ZIHjHI_uNUrAh6IiZzU148I2vHs3z2ZCdbteRKH6SXI/edit`
+- **Backend:** Google Apps Script Web App API (`google-apps-script/Code.gs`)
+- **Multi-Device Synchronization:** Automatic real-time polling every 12 seconds (10–15s window) and BroadcastChannel instant tab synchronization.
 
 ### Sheet Structure:
 1. **`Registrations`**:
@@ -79,16 +83,17 @@ npm run dev
 ```
 
 ### 2. Connect Google Sheets
-1. Create a new Google Spreadsheet named **"Happy Parenting Database"** at [sheets.new](https://sheets.new).
+1. Open the official Google Spreadsheet at:  
+   `https://docs.google.com/spreadsheets/d/1ZIHjHI_uNUrAh6IiZzU148I2vHs3z2ZCdbteRKH6SXI/edit`
 2. Go to **Extensions > Apps Script**.
-3. Replace the contents of `Code.gs` with the code in `google-apps-script/Code.gs`.
+3. Replace the contents of `Code.gs` with the complete code in `google-apps-script/Code.gs`.
 4. In the script editor toolbar, select **`setupDatabase`** and click **Run**. (Initializes all 4 sheets and admin account).
 5. Click **Deploy > New deployment**:
    - Type: **Web app**
    - Execute as: **Me**
    - Who has access: **Anyone**
 6. Copy the generated Web App URL (`https://script.google.com/macros/s/.../exec`).
-7. In the Admin Dashboard, go to **Settings & Cloud DB**, paste the URL into the input field, and click **Save URL**.
+7. In the Admin Dashboard, go to **Settings & Cloud**, paste the URL into the input field, and click **Save URL** (or set `VITE_GOOGLE_APPS_SCRIPT_URL` in `.env`).
 
 ### 3. Deploy to Vercel
 ```bash

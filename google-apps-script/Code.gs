@@ -25,7 +25,7 @@ function getSpreadsheet() {
       console.warn('Could not open spreadsheet by ID, falling back to active spreadsheet:', e);
     }
   }
-  return getSpreadsheet();
+  return SpreadsheetApp.getActiveSpreadsheet();
 }
 
 const SHEET_NAMES = {
@@ -200,7 +200,10 @@ function handleRequest(e, method) {
         break;
 
       case 'getRegistrations':
-        response = handleGetRegistrations(params);
+      case 'search':
+      case 'filter':
+        const combinedParams = Object.assign({}, params, body, paramData);
+        response = handleGetRegistrations(combinedParams);
         break;
 
       case 'getRegistrationById':

@@ -9,6 +9,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import { API_CONFIG } from '../config/apiConfig';
 
 export default function AdminSettings() {
   const [gasUrl, setGasUrl] = useState('');
@@ -101,11 +102,11 @@ export default function AdminSettings() {
               Official Google Spreadsheet Database ID
             </span>
             <span className="font-mono font-bold text-emerald text-sm select-all">
-              1ZIHjHI_uNUrAh6IiZzU148I2vHs3z2ZCdbteRKH6SXI
+              {API_CONFIG.SPREADSHEET_ID}
             </span>
           </div>
           <a
-            href="https://docs.google.com/spreadsheets/d/1ZIHjHI_uNUrAh6IiZzU148I2vHs3z2ZCdbteRKH6SXI/edit"
+            href={`https://docs.google.com/spreadsheets/d/${API_CONFIG.SPREADSHEET_ID}/edit`}
             target="_blank"
             rel="noopener noreferrer"
             className="px-3.5 py-2 rounded-xl bg-forest hover:bg-emerald text-white font-bold text-xs flex items-center justify-center space-x-1.5 transition-colors self-start sm:self-auto shrink-0"
@@ -177,7 +178,7 @@ export default function AdminSettings() {
           </h4>
 
           <ol className="list-decimal list-inside space-y-1.5 text-text-secondary pl-1 leading-relaxed">
-            <li><a href="https://sheets.new" target="_blank" rel="noreferrer" className="text-emerald-deep font-bold underline">Google Sheets</a> തുറന്ന് <strong>"Happy Parenting Database"</strong> എന്ന പേരിൽ പുതിയൊരു ഷീറ്റ് ഉണ്ടാക്കുക.</li>
+            <li><a href={`https://docs.google.com/spreadsheets/d/${API_CONFIG.SPREADSHEET_ID}/edit`} target="_blank" rel="noreferrer" className="text-emerald-deep font-bold underline">ഔദ്യോഗിക Google Spreadsheet</a> തുറക്കുക (Spreadsheet ID: <code className="bg-white px-1.5 py-0.5 rounded border font-mono font-bold">{API_CONFIG.SPREADSHEET_ID}</code>).</li>
             <li>മുകളിലെ മെനുവിൽ നിന്നും <strong>Extensions &gt; Apps Script</strong> ക്ലിക്ക് ചെയ്യുക.</li>
             <li><code className="bg-white px-1.5 py-0.5 rounded border font-mono">google-apps-script/Code.gs</code> ഫയലിലെ കോഡ് പൂർണ്ണമായും കോപ്പി ചെയ്ത് പേസ്റ്റ് ചെയ്യുക.</li>
             <li>ടൂൾബാറിൽ നിന്നും <code className="bg-white px-1.5 py-0.5 rounded border font-mono font-bold">setupDatabase</code> തിരഞ്ഞെടുത്ത് <strong>Run</strong> ചെയ്യുക (ഇത് 4 ഷീറ്റുകളും ഹെഡറുകളും ഓട്ടോമാറ്റിക് ആയി ഉണ്ടാക്കും).</li>

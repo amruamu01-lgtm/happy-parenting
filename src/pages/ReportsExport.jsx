@@ -11,6 +11,7 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { apiService } from '../services/api';
+import { API_CONFIG } from '../config/apiConfig';
 
 export default function ReportsExport() {
   const [registrations, setRegistrations] = useState([]);
@@ -38,7 +39,8 @@ export default function ReportsExport() {
   useEffect(() => {
     loadData();
 
-    const interval = setInterval(() => loadData(true), 20000);
+    // Cross-device auto-refresh every 12 seconds (10-15s requirement)
+    const interval = setInterval(() => loadData(true), API_CONFIG.AUTO_REFRESH_INTERVAL_MS || 12000);
     const channel = typeof window !== 'undefined' && window.BroadcastChannel ? new BroadcastChannel('hp_data_sync') : null;
     if (channel) {
       channel.onmessage = () => loadData(true);
