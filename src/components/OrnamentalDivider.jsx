@@ -1,8 +1,8 @@
 import React from 'react';
 
 export default function OrnamentalDivider({ className = '', light = false }) {
-  const strokeColor = light ? '#C7B7A7' : '#A9927D'; // Grullo / Grullo light
-  const fillColor = light ? '#A9927D' : '#49111C';   // Grullo / Dark Sienna
+  const strokeColor = light ? '#E59C5A' : '#D9883F'; // Warm Orange
+  const fillColor = light ? '#D9883F' : '#952F2F';   // Warm Orange / Burgundy
 
   return (
     <div className={`flex items-center justify-center space-x-3 my-4 ${className}`}>
