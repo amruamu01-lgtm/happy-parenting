@@ -121,39 +121,39 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
       {/* Back Navigation */}
       <button
         onClick={() => { setActivePage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-        className="inline-flex items-center space-x-2 text-xs font-malayalam font-semibold text-emerald-forest hover:text-emerald-deep mb-6 transition-colors"
+        className="inline-flex items-center space-x-2 text-xs font-malayalam font-semibold text-umber hover:text-richblack mb-6 transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-4 h-4 text-grullo" />
         <span>ഹോമിലേക്ക് മടങ്ങുക</span>
       </button>
 
       {/* Main Card */}
-      <div className="bg-white rounded-3xl border-2 border-gold-antique/40 shadow-card overflow-hidden">
+      <div className="bg-white rounded-3xl border-2 border-grullo/40 shadow-card overflow-hidden">
         
-        {/* Header Banner - Main Heading in English */}
-        <div className="bg-emerald-deep text-ivory p-6 sm:p-8 text-center relative border-b-2 border-gold-antique">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-amber-warm/20 border border-amber-warm/40 text-xs text-amber-warm mb-3">
-            <UserCheck className="w-4 h-4" />
+        {/* Header Banner - Rich Black & Grullo */}
+        <div className="bg-richblack text-cultured p-6 sm:p-8 text-center relative border-b-2 border-grullo">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-umber/30 border border-grullo/40 text-xs text-grullo-light mb-3">
+            <UserCheck className="w-4 h-4 text-grullo" />
             <span className="font-malayalam">ബഹുമാന്യരായ അതിഥികൾക്കുള്ള രജിസ്ട്രേഷൻ</span>
           </div>
 
-          <h1 className="font-heading font-black text-2xl sm:text-3xl text-gold-champagne tracking-wide uppercase">
+          <h1 className="font-heading font-black text-2xl sm:text-3xl text-grullo-light tracking-wide uppercase">
             NORMAL GUEST REGISTRATION
           </h1>
-          <p className="font-malayalam text-base sm:text-lg text-ivory/95 font-medium mt-1">
+          <p className="font-malayalam text-base sm:text-lg text-cultured/95 font-medium mt-1">
             മറ്റു അതിഥികൾക്കുള്ള രജിസ്ട്രേഷൻ
           </p>
 
           <OrnamentalDivider light className="my-3 opacity-60" />
 
-          <p className="font-malayalam text-xs text-ivory/80 max-w-md mx-auto">
+          <p className="font-malayalam text-xs text-cultured/80 max-w-md mx-auto">
             ഹാപ്പി പാരന്റിംഗ് സെമിനാറിൽ പങ്കെടുക്കുന്നതിനായി നിങ്ങളുടെ വിവരങ്ങൾ താഴെ രേഖപ്പെടുത്തുക.
           </p>
         </div>
 
-        {/* Server Error Alert */}
+        {/* Server Error Alert in Dark Sienna */}
         {serverError && (
-          <div className="mx-6 mt-6 p-4 rounded-xl bg-burgundy-surface border border-burgundy-deep text-burgundy-deep text-xs font-malayalam font-medium flex items-start space-x-2.5">
+          <div className="mx-6 mt-6 p-4 rounded-xl bg-darksienna-surface border border-darksienna text-darksienna text-xs font-malayalam font-medium flex items-start space-x-2.5">
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <div>
               <p className="font-bold">രജിസ്ട്രേഷൻ അറിയിപ്പ്</p>
@@ -167,11 +167,11 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
           
           {/* Guest Name */}
           <div>
-            <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-              അതിഥിയുടെ പൂർണ്ണ പേര് (Guest Full Name) <span className="text-burgundy-deep">*</span>
+            <label className="block text-xs font-malayalam font-bold text-richblack mb-1">
+              അതിഥിയുടെ പൂർണ്ണ പേര് (Guest Full Name) <span className="text-darksienna">*</span>
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gold-antique">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-grullo">
                 <User className="w-4 h-4" />
               </div>
               <input
@@ -179,13 +179,13 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                 placeholder="അതിഥിയുടെ പേര് നൽകുക"
                 value={formData.guestName}
                 onChange={(e) => setFormData({ ...formData, guestName: e.target.value })}
-                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-amber-warm focus:bg-white transition-all ${
-                  errors.guestName ? 'border-burgundy-deep' : 'border-gold-antique/40'
+                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-cultured/50 text-richblack placeholder:text-umber/60 text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-darksienna focus:bg-white transition-all ${
+                  errors.guestName ? 'border-darksienna' : 'border-grullo/40'
                 }`}
               />
             </div>
             {errors.guestName && (
-              <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.guestName}</p>
+              <p className="text-[11px] font-malayalam text-darksienna mt-1">{errors.guestName}</p>
             )}
           </div>
 
@@ -193,11 +193,11 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Mobile */}
             <div>
-              <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                മൊബൈൽ നമ്പർ (Mobile Number) <span className="text-burgundy-deep">*</span>
+              <label className="block text-xs font-malayalam font-bold text-richblack mb-1">
+                മൊബൈൽ നമ്പർ (Mobile Number) <span className="text-darksienna">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gold-antique">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-grullo">
                   <Phone className="w-4 h-4" />
                 </div>
                 <input
@@ -206,23 +206,23 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                   maxLength={10}
                   value={formData.mobileNumber}
                   onChange={handleMobileChange}
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm font-mono focus:outline-none focus:ring-2 focus:ring-amber-warm focus:bg-white transition-all ${
-                    errors.mobileNumber ? 'border-burgundy-deep' : 'border-gold-antique/40'
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-cultured/50 text-richblack placeholder:text-umber/60 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-darksienna focus:bg-white transition-all ${
+                    errors.mobileNumber ? 'border-darksienna' : 'border-grullo/40'
                   }`}
                 />
               </div>
               {errors.mobileNumber && (
-                <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.mobileNumber}</p>
+                <p className="text-[11px] font-malayalam text-darksienna mt-1">{errors.mobileNumber}</p>
               )}
             </div>
 
             {/* WhatsApp */}
             <div>
-              <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-                വാട്സ്ആപ്പ് നമ്പർ (WhatsApp Number) <span className="text-burgundy-deep">*</span>
+              <label className="block text-xs font-malayalam font-bold text-richblack mb-1">
+                വാട്സ്ആപ്പ് നമ്പർ (WhatsApp Number) <span className="text-darksienna">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-forest">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-grullo">
                   <MessageSquare className="w-4 h-4" />
                 </div>
                 <input
@@ -233,8 +233,8 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                   value={formData.sameAsMobile ? formData.mobileNumber : formData.whatsappNumber}
                   onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                   className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm font-mono transition-all ${
-                    formData.sameAsMobile ? 'bg-gray-100 text-text-secondary cursor-not-allowed' : 'bg-ivory/30 text-text-primary focus:outline-none focus:ring-2 focus:ring-amber-warm focus:bg-white'
-                  } ${errors.whatsappNumber ? 'border-burgundy-deep' : 'border-gold-antique/40'}`}
+                    formData.sameAsMobile ? 'bg-gray-100 text-umber/60 cursor-not-allowed' : 'bg-cultured/50 text-richblack focus:outline-none focus:ring-2 focus:ring-darksienna focus:bg-white'
+                  } ${errors.whatsappNumber ? 'border-darksienna' : 'border-grullo/40'}`}
                 />
               </div>
               <div className="mt-1.5 flex items-center space-x-2">
@@ -243,38 +243,38 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                   id="guestSameAsMobile"
                   checked={formData.sameAsMobile}
                   onChange={handleCheckboxChange}
-                  className="w-4 h-4 text-emerald-deep rounded border-gold-antique/50 focus:ring-emerald-deep"
+                  className="w-4 h-4 text-darksienna rounded border-grullo/50 focus:ring-darksienna"
                 />
-                <label htmlFor="guestSameAsMobile" className="text-xs font-malayalam text-text-secondary cursor-pointer select-none">
+                <label htmlFor="guestSameAsMobile" className="text-xs font-malayalam text-umber cursor-pointer select-none">
                   മൊബൈൽ നമ്പർ തന്നെ (Same as Mobile)
                 </label>
               </div>
               {errors.whatsappNumber && (
-                <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.whatsappNumber}</p>
+                <p className="text-[11px] font-malayalam text-darksienna mt-1">{errors.whatsappNumber}</p>
               )}
             </div>
           </div>
 
           {/* Number of Guests */}
           <div>
-            <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-              പങ്കെടുക്കുന്ന ആളുകളുടെ എണ്ണം (Number of Guests) <span className="text-burgundy-deep">*</span>
+            <label className="block text-xs font-malayalam font-bold text-richblack mb-1">
+              പങ്കെടുക്കുന്ന ആളുകളുടെ എണ്ണം (Number of Guests) <span className="text-darksienna">*</span>
             </label>
-            <div className="flex items-center space-x-3 bg-ivory/40 border border-gold-antique/40 rounded-xl p-2 max-w-xs">
+            <div className="flex items-center space-x-3 bg-cultured/60 border border-grullo/40 rounded-xl p-2 max-w-xs">
               <button
                 type="button"
                 onClick={() => setFormData(prev => ({ ...prev, guestsCount: Math.max(1, prev.guestsCount - 1) }))}
-                className="w-10 h-10 rounded-lg bg-white border border-gold-antique/30 flex items-center justify-center text-emerald-deep hover:bg-gold-antique hover:text-white transition-colors"
+                className="w-10 h-10 rounded-lg bg-white border border-grullo/30 flex items-center justify-center text-richblack hover:bg-grullo hover:text-white transition-colors"
               >
                 <Minus className="w-4 h-4" />
               </button>
-              <span className="flex-1 text-center font-heading font-bold text-lg text-emerald-deep">
+              <span className="flex-1 text-center font-heading font-bold text-lg text-richblack font-mono">
                 {formData.guestsCount}
               </span>
               <button
                 type="button"
                 onClick={() => setFormData(prev => ({ ...prev, guestsCount: prev.guestsCount + 1 }))}
-                className="w-10 h-10 rounded-lg bg-white border border-gold-antique/30 flex items-center justify-center text-emerald-deep hover:bg-gold-antique hover:text-white transition-colors"
+                className="w-10 h-10 rounded-lg bg-white border border-grullo/30 flex items-center justify-center text-richblack hover:bg-grullo hover:text-white transition-colors"
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -283,11 +283,11 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
 
           {/* Address / Place */}
           <div>
-            <label className="block text-xs font-malayalam font-bold text-text-primary mb-1">
-              സ്ഥലം / മേൽവിലാസം (Address / Place) <span className="text-burgundy-deep">*</span>
+            <label className="block text-xs font-malayalam font-bold text-richblack mb-1">
+              സ്ഥലം / മേൽവിലാസം (Address / Place) <span className="text-darksienna">*</span>
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gold-antique">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-grullo">
                 <MapPin className="w-4 h-4" />
               </div>
               <input
@@ -295,13 +295,13 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
                 placeholder="ഉദാ: മേലാറ്റൂർ, മലപ്പുറം"
                 value={formData.addressPlace}
                 onChange={(e) => setFormData({ ...formData, addressPlace: e.target.value })}
-                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-ivory/30 text-text-primary placeholder:text-text-muted text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-amber-warm focus:bg-white transition-all ${
-                  errors.addressPlace ? 'border-burgundy-deep' : 'border-gold-antique/40'
+                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-cultured/50 text-richblack placeholder:text-umber/60 text-sm font-malayalam focus:outline-none focus:ring-2 focus:ring-darksienna focus:bg-white transition-all ${
+                  errors.addressPlace ? 'border-darksienna' : 'border-grullo/40'
                 }`}
               />
             </div>
             {errors.addressPlace && (
-              <p className="text-[11px] font-malayalam text-burgundy-deep mt-1">{errors.addressPlace}</p>
+              <p className="text-[11px] font-malayalam text-darksienna mt-1">{errors.addressPlace}</p>
             )}
           </div>
 
@@ -310,21 +310,21 @@ export default function NormalGuestRegistration({ setActivePage, setSuccessData 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-deep via-emerald-forest to-emerald-deep text-gold-champagne font-malayalam font-bold text-base shadow-emerald hover:brightness-110 active:scale-95 transition-all duration-300 border-2 border-gold-antique flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-richblack via-darksienna to-richblack text-cultured font-malayalam font-bold text-base shadow-sienna hover:brightness-110 active:scale-95 transition-all duration-300 border-2 border-grullo flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin text-gold-champagne" />
+                  <Loader2 className="w-5 h-5 animate-spin text-grullo-light" />
                   <span>രജിസ്ട്രേഷൻ സമർപ്പിക്കുന്നു...</span>
                 </>
               ) : (
                 <>
-                  <CheckCircle2 className="w-5 h-5 text-gold-antique" />
+                  <CheckCircle2 className="w-5 h-5 text-grullo" />
                   <span>രജിസ്ട്രേഷൻ സമർപ്പിക്കുക</span>
                 </>
               )}
             </button>
-            <p className="text-center text-xs font-malayalam text-text-secondary mt-2">
+            <p className="text-center text-xs font-malayalam text-umber mt-2">
               ശ്രദ്ധിക്കുക: ഇതൊരു ഗ്രൂപ്പ് പേരന്റ്സ് മീറ്റിംഗ് ആണ്. രാവിലെ 9:45 ന് എത്തിച്ചേരുക.
             </p>
           </div>

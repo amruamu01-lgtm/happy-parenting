@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-ivory text-text-primary antialiased;
+    @apply bg-cultured text-richblack antialiased;
     font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
@@ -15,10 +15,11 @@
   }
 }
 
-/* Primary Malayalam Font - Manjari */
+/* Primary Malayalam Font - Modern, Clean & Professional */
 .font-malayalam {
-  font-family: 'Manjari', 'Noto Sans Malayalam', system-ui, -apple-system, sans-serif;
+  font-family: 'Manjari', 'Anek Malayalam', 'Noto Sans Malayalam', system-ui, -apple-system, sans-serif;
   line-height: 1.65;
+  letter-spacing: -0.005em;
 }
 
 /* Primary English Font - Montserrat */
@@ -33,25 +34,31 @@
 }
 
 .islamic-pattern-bg {
-  background-color: #123F32;
-  background-image: radial-gradient(rgba(198, 164, 91, 0.22) 1px, transparent 1px);
+  background-color: #0A0908;
+  background-image: radial-gradient(rgba(169, 146, 125, 0.22) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 .islamic-pattern-light {
-  background-color: #F7F3E9;
-  background-image: radial-gradient(rgba(18, 63, 50, 0.08) 1px, transparent 1px);
+  background-color: #F2F4F3;
+  background-image: radial-gradient(rgba(94, 80, 63, 0.08) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
 .gold-gradient-text {
-  background: linear-gradient(135deg, #DCC58E 0%, #C6A45B 50%, #B38E3F 100%);
+  background: linear-gradient(135deg, #C7B7A7 0%, #A9927D 50%, #8C7764 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sienna-gradient-text {
+  background: linear-gradient(135deg, #A9927D 0%, #631827 50%, #49111C 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gold-border-gradient {
-  border-image: linear-gradient(to right, #DCC58E, #C6A45B, #DCC58E) 1;
+  border-image: linear-gradient(to right, #C7B7A7, #A9927D, #C7B7A7) 1;
 }
 
 /* Custom Scrollbar */
@@ -61,16 +68,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #F7F3E9;
+  background: #F2F4F3;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C6A45B;
+  background: #A9927D;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #174B3B;
+  background: #49111C;
 }
 
 /* Print Styles */
